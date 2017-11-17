@@ -7,6 +7,10 @@
 
 `npm run dev` start server on default port listed in `./src/config.json` or `PORT=portNumber npm run dev` start server on port `portNumber` 
 
+### Inital DB Structure
+
+`pgSql/initsqldb/initialiseDatabase.sql`
+
 ### TO DO (initial)
 * Create documentation of API
 * Refactor Authorisation

@@ -1,0 +1,43 @@
+{
+  "name": "mSupply Information Server",
+  "version": "0.0.0",
+  "description": "Express server with REST API, for consolidating information about all mSupply instances",
+  "main": "dist",
+  "scripts": {
+    "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
+    "build": "babel src -s -D -d dist --presets es2015,stage-0",
+    "start": "node dist",
+    "prestart": "npm run -s build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sussol/msupply-information-server"
+  },
+  "author": "Sussol",
+  "license": "MIT",
+  "dependencies": {
+    "base-64": "^0.1.0",
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "morgan": "^1.8.0",
+    "pg": "^6.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.0",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "csvtojson": "^1.1.5",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.3",
+    "nodemon": "^1.9.2"
+  },
+  "bugs": {
+    "url": "https://github.com/sussol/msupply-information-server/issues"
+  },
+  "homepage": "https://github.com/sussol/msupply-information-server"
+}

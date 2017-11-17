@@ -1,0 +1,17 @@
+{
+  "port": 8080,
+  "bodyLimit": "100kb",
+  "v1Version": "0.1",
+  "logFileName": "./log/logfile.log",
+  "username": "sussol",
+  "password": "mybike1111",
+  "pg": {
+    "host": "localhost",
+    "port": "5433",
+    "max": "20",
+    "idleTimeoutMillis": 60000,
+    "user": "postgres",
+    "password": "pass",
+    "database": "mSupplyInfoServer"
+  }
+}

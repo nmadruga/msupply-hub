@@ -1,12 +1,10 @@
 import { Router } from 'express';
-import postVersion from './postVersion';
-import getVersion from './getVersion';
+import site from './site';
 
 export default opts => {
   const api = Router();
 
-  api.get('/version/:servercode', getVersion(opts));
-  api.post('/version', postVersion(opts));
+  api.post('/site/:UUID', site(opts));
 
   return api;
 };

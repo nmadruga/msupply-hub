@@ -1,10 +1,9 @@
 DROP TABLE IF EXISTS "version";
 
-CREATE TABLE "version" (
-   id SERIAL,
-   "version" varchar,
-   "servercode" varchar,
-   "text" varchar,
-   "timestamp" date,
-   PRIMARY KEY (id)
+CREATE TABLE "sites" (
+   "UUID" varchar,
+   "jwt" varchar,
+   "create" TIMESTAMP NOT NULL DEFAULT NOW(),
+   "data" jsonb,
+   PRIMARY KEY ("UUID")
 );

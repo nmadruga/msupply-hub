@@ -1,10 +1,10 @@
 #!/bin/bash
-CONTAINER_NAME=tupaiaPGContainer
+CONTAINER_NAME=mSupplyHub
 PG_VERSION=latest
 ON_PORT=5433
-DATABASE=mSupplyInfoServer
+DATABASE=mSupplyHub
 PASSWORD=pass
-HOST_DB_DIR=$HOME/Documents/tupaia/DOCKER_POSTGRES
+HOST_DB_DIR=$HOME/Documents/mSupply/mSupplyHub_POSTGRES
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/initsqldb"
 

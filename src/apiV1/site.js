@@ -28,7 +28,7 @@ export default ({ config, db }) => async (req, res, next) => {
       token: newJWT,
     });
   } catch (e) {
-    next(e);
+    return next(e);
   }
 };
 

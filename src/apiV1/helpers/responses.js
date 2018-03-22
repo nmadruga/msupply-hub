@@ -20,13 +20,13 @@ export const UUIDNotRegistered = res => (
 );
 
 export const eventAdded = res => (
-  res.status(401).send({
+  res.send({
     success: true,
     message: 'event added',
   })
 );
 export const siteAdded = (res, newJWT) => (
-  res.status(401).send({
+  res.send({
     authorized: true,
     token: newJWT,
     message: 'site added successfully',

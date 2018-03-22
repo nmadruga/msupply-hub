@@ -40,14 +40,14 @@ JSON Body:
 ```JSON
  {
      "type": "...", 
-     "triggeredDate": "....",
+     "triggerDate": "....",
      "moreInfo": "...",
      "moreInfo2": "...",
      "etc..": "..."
  }
  ```
 
- `NOTE:` type is required and triggeredDate is optional
+ `NOTE:` type is required and triggerDate is optional
 
 * ###### ON SUCCESS
   * code:  `200`
@@ -65,5 +65,5 @@ JSON Body:
 
 * ###### NOTES
  
- On Succesfull post the new event will be added in events table (`siteUUID` will be as per JWT token), event type will be as per `type` field in json body, `triggered` as per `triggeredDate` in json body and all other fields in json body will be in stored in event table's `data` field
+ On Succesfull post the new event will be added in events table (`siteUUID` will be as per JWT token), event type will be as per `type` field in json body, `triggered` as per `triggerDate` in json body and all other fields in json body will be in stored in event table's `data` field
  

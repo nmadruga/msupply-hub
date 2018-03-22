@@ -19,7 +19,7 @@ export default ({ config, db }) => async (req, res, next) => {
     }, config);
     if (!await checkAddNewSite(db, UUID, req.body, newJWT)) return UUIDAlreadyExists(res);
 
-    return siteAdded(newJWT);
+    return siteAdded(res, newJWT);
   } catch (e) {
     return next(e);
   }

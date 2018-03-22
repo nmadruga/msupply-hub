@@ -11,6 +11,4 @@
 
 `pgSql/initsqldb/initialiseDatabase.sql`
 
-
-### API Documentation
-[index](https://github.com/sussol/msupply-hub/blob/master/src/apiV1/Documentation/site.md)
+[API DOCUMENTATION](https://github.com/sussol/msupply-hub/blob/master/src/apiV1/Documentation/site.md)

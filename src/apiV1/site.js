@@ -3,6 +3,7 @@ import {
   encodeJWT,
   missingAuthHeaderOrJWT,
   UUIDAlreadyExists,
+  siteAdded,
  } from './helpers';
 import { checkAddNewSite } from '../database';
 
@@ -18,10 +19,7 @@ export default ({ config, db }) => async (req, res, next) => {
     }, config);
     if (!await checkAddNewSite(db, UUID, req.body, newJWT)) return UUIDAlreadyExists(res);
 
-    return res.send({
-      authorized: true,
-      token: newJWT,
-    });
+    return setAdded(newJWT);
   } catch (e) {
     return next(e);
   }

@@ -11,3 +11,17 @@ export const UUIDAlreadyExists = res => (
     message: 'UUID already registered',
   })
 );
+
+export const UUIDNotRegistered = res => (
+  res.status(401).send({
+    authorized: false,
+    message: 'UUID is not registered',
+  })
+);
+
+export const eventAdded = res => (
+  res.status(401).send({
+    success: true,
+    message: 'event added',
+  })
+);

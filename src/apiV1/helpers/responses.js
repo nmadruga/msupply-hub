@@ -25,3 +25,11 @@ export const eventAdded = res => (
     message: 'event added',
   })
 );
+export const siteAdded = (res, newJWT) => (
+  res.status(401).send({
+    authorized: true,
+    token: newJWT,
+    message: 'site added successfully',
+  })
+);
+

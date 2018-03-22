@@ -5,4 +5,5 @@ export {
     UUIDAlreadyExists,
     UUIDNotRegistered,
     eventAdded,
+    siteAdded,
 } from './responses';

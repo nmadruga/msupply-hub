@@ -18,7 +18,7 @@ app.use(
     limit: config.bodyLimit,
   })
 );
-
+// TODO bind a middleware to check JWT token, rather then repeating the same code in site and event
 // api router
 app.use('/api/v1', apiV1({ config, db: initDB(config) }));
 

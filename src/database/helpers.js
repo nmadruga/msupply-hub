@@ -14,8 +14,8 @@ export const checkSiteExists = async (db, UUID) => {
 
 export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   const insertStatement = 'INSERT into "events" ("siteUUID", "type", "data") VALUES ($1, $2, $3)';
-  const newID = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]).id;
+  const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
 
-  if (triggerDate) await db.none('UPDATE "events" set triggered = $1 where id = $2', [triggerDate, newID]);
+  if (triggerDate) await db.none('UPDATE "events" set triggered = $1 where id = $2', [triggerDate, insertResult.id]);
 };
 

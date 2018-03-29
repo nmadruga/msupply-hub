@@ -13,7 +13,7 @@ export const UUIDAlreadyExists = res => (
 );
 
 export const siteAdded = (res, newJWT) => (
-  res.status(401).send({
+  res.send({
     authorized: true,
     token: newJWT,
     message: 'site added successfully',

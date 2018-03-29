@@ -11,8 +11,4 @@
 
 `pgSql/initsqldb/initialiseDatabase.sql`
 
-### TO DO (initial)
-* Create documentation of API
-* Refactor Authorisation
-* Think more about tables
-* Sequaliser ?
+[API DOCUMENTATION](https://github.com/sussol/msupply-hub/blob/master/src/apiV1/Documentation/site.md)

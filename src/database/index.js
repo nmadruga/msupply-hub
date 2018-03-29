@@ -1,3 +1,3 @@
 export { default } from './initDB';
-export { checkAddNewSite } from './helpers';
+export { checkAddNewSite, checkSiteExists, addEvent } from './helpers';
 

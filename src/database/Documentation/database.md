@@ -1,8 +1,9 @@
 # Tables in database mSupplyHub
 
 ## Site
-UUID and jwt token are generated on mSupplyHub for each new site.
-One site represents on mSupply server: satelitte or primary.
+UUID is generated in mSupply before posting new site.\\
+One site represents on mSupply server: satelitte or primary.\\
+jwt token is generated on mSupplyHub for each new site.\\
 There is only 1 entry per site on table Site.
 
 Example of row:
@@ -14,7 +15,7 @@ ED7704D48ABA47BDB2D50B08A7488F3A | ... | 2018-05-30 05:41:44.963867 | `{  "OS": 
 
 ## Event
 Everything else that is pushed from mSupply server to mSupplyHub is an event.
-Event has 3 (or more in the future) different types: info, event & error.
+table Event has 3 (or more in the future) different types: info, event & error.
 
 ### Basic data 
 This event has type **info** and will be sending daily basic data with mSupply information.

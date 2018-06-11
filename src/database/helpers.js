@@ -19,3 +19,11 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   if (triggerDate) await db.none('UPDATE "events" set triggered = $1 where id = $2', [triggerDate, insertResult.id]);
 };
 
+export const getEvents = async db => {
+  try {
+    const events = await db.any('SELECT * FROM "events"'); 
+    return events; 
+  } catch (e) {
+    return []; 
+  }
+}; 

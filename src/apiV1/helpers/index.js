@@ -6,4 +6,6 @@ export {
     UUIDNotRegistered,
     eventAdded,
     siteAdded,
+    eventsFound, 
+    eventsNotFound
 } from './responses';

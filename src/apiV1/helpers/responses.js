@@ -33,3 +33,18 @@ export const siteAdded = (res, newJWT) => (
     message: 'site added successfully',
   })
 );
+
+export const eventsFound = (res, events) => (
+  res.send({
+    authorized: true, 
+    message: `Number of events found: ${events.length}`, 
+    result: events, 
+  })
+); 
+
+export const eventsNotFound = res => (
+  res.status(401).send({
+    authorized: true, 
+    message: 'No events found in search', 
+  })
+); 

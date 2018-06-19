@@ -1,56 +1,63 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-// import { SussolReactTable } from 'sussol-react-table';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
-const BottomRow = styled.div`
-  display: flex;
-  flex: 1;
-  flex-grow: 1;
-  border: 3px solid rgba(0, 0, 0, 0.2);
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
-  background-color: #fefbd8;
-`;
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
 class ResultTable extends Component {
-  getRows(events) {
-    // TODO: Get all values from each event and set in proper table
-    return events.map(event => {
-      return (
-        <TableRow key={`id-${event.id}`}>
-          <TableCell>{event.id}</TableCell>
-          <TableCell>{event.type}</TableCell>
-          <TableCell>{event.pushed}</TableCell>
-          <TableCell>{event.version}</TableCell>
-          <TableCell>{event.expiryDate}</TableCell>
-          <TableCell>{event.releaseDate}</TableCell>
-          <TableCell>{event.data}</TableCell>
-        </TableRow>
-      );
-    });
+  buildHeaders(events) {
+    return (
+      <TableRow>
+        {events.length > 0 ? (
+          Object.keys(events[0]).map(key => {
+            const title = key.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
+            return <CustomTableCell>{title}</CustomTableCell>;
+          })
+        ) : null}
+      </TableRow>
+    );
+  }
+
+  buildRows(events) {
+    return events.length > 0
+      ? events.map((event, index) => (
+          <TableRow key={index}>
+            {Object.values(event).map(value => {
+              if (typeof value == 'number')
+                return <CustomTableCell numeric>{value}</CustomTableCell>;
+              if (typeof value == 'string') return <CustomTableCell>{value}</CustomTableCell>;
+              if (typeof value == 'object')
+                return <CustomTableCell>{JSON.stringify(value)}</CustomTableCell>;
+            })}
+          </TableRow>
+        ))
+      : null;
   }
 
   render() {
     const { events } = this.props;
     return (
-      <BottomRow>
-        <table width="100%" border="1">
-          {events &&
-            events.map((event, index) => {
-              return (
-                <tr>
-                  <td key={`id-${index}`}>{event.id}</td>
-                  <td key={`type-${index}`}>{event.type}</td>
-                  <td key={`data-${index}`}>{JSON.stringify(event.data)}</td>
-                </tr>
-              );
-            })}
-        </table>
-      </BottomRow>
+      <Paper>
+        <Table>
+          <TableHead>{this.buildHeaders(events)}</TableHead>
+          <TableBody>{this.buildRows(events)}</TableBody>
+        </Table>
+      </Paper>
     );
   }
 }

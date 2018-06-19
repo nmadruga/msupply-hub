@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, TextField } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import SearchIcon from 'material-ui/svg-icons/action/search';
+import SearchIcon from '@material-ui/icons/Search';
 import { requestSites, requestEvents } from '../actions';
 
 const TopRow = styled.div`
@@ -27,7 +27,7 @@ class SearchBar extends Component {
     return (
       <TopRow>
         <TextField style={{ TextFieldStyle }} onChange={onRequestSites} />
-        <Button class="mdc-button" onClick={onRequestEvents}>
+        <Button onClick={onRequestEvents}>
           <SearchIcon />
           Search
         </Button>

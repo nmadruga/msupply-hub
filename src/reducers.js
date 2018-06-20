@@ -6,27 +6,25 @@ import {
   FETCH_SITES_SUCCESS,
   REQUEST_EVENTS,
   REQUEST_SITES,
+  SELECT_SITE,
 } from './actions';
 
 const sites = (
   state = {
     isFetching: false,
+    isShowingList: true,
+    selectedSite: '',
+    sitesUUIDs: [],
     message: '',
-    data: [],
   },
   action,
 ) => {
   switch (action.type) {
-    case REQUEST_SITES:
-      return {
-        ...state,
-        isFetching: true,
-      };
     case FETCH_SITES_SUCCESS:
       return {
         ...state,
         isFetching: false,
-        data: action.result,
+        sitesUUIDs: action.result.map(site => site.UUID),
         message: action.message,
       };
     case FETCH_SITES_ERROR:
@@ -34,6 +32,16 @@ const sites = (
         ...state,
         isFetching: false,
         message: action.message,
+      };
+    case REQUEST_SITES:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case SELECT_SITE:
+      return {
+        ...state,
+        selectedSite: action.siteUUID,
       };
     default:
       return state;

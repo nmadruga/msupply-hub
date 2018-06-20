@@ -10,13 +10,7 @@ export const FETCH_SITES_ERROR = 'FETCH_SITES_ERROR';
 export const FETCH_SITES_SUCCESS = 'FETCH_SITES_SUCCESS';
 export const REQUEST_EVENTS = 'REQUEST_EVENTS';
 export const REQUEST_SITES = 'REQUEST_SITES';
-
-export function requestSites(siteUUID) {
-  return {
-    type: REQUEST_SITES,
-    siteUUID,
-  };
-}
+export const SELECT_SITE = 'SELECT_SITE';
 
 export function fetchSitesSuccess({ message, result }) {
   return {
@@ -30,6 +24,20 @@ export function fetchSitesError(errorMessage) {
   return {
     type: FETCH_SITES_ERROR,
     errorMessage,
+  };
+}
+
+export function requestSites(siteUUID) {
+  return {
+    type: REQUEST_SITES,
+    siteUUID,
+  };
+}
+
+export function selectSite(siteUUID) {
+  return {
+    type: SELECT_SITE,
+    siteUUID,
   };
 }
 

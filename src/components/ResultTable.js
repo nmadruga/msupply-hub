@@ -24,9 +24,9 @@ class ResultTable extends Component {
     return (
       <TableRow>
         {events.length > 0 ? (
-          Object.keys(events[0]).map(key => {
+          Object.keys(events[0]).map((key, index) => {
             const title = key.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
-            return <CustomTableCell>{title}</CustomTableCell>;
+            return <CustomTableCell key={`title-${index}`}>{title}</CustomTableCell>;
           })
         ) : null}
       </TableRow>
@@ -37,12 +37,17 @@ class ResultTable extends Component {
     return events.length > 0
       ? events.map((event, index) => (
           <TableRow key={index}>
-            {Object.values(event).map(value => {
-              if (typeof value == 'number')
-                return <CustomTableCell numeric>{value}</CustomTableCell>;
-              if (typeof value == 'string') return <CustomTableCell>{value}</CustomTableCell>;
-              if (typeof value == 'object')
-                return <CustomTableCell>{JSON.stringify(value)}</CustomTableCell>;
+            {Object.values(event).map((value, indexElem) => {
+              if (typeof value === 'number')
+                return (
+                  <CustomTableCell key={indexElem} numeric>
+                    {value}
+                  </CustomTableCell>
+                );
+              if (typeof value === 'string')
+                return <CustomTableCell key={indexElem}>{value}</CustomTableCell>;
+              if (typeof value === 'object')
+                return <CustomTableCell key={indexElem}>{JSON.stringify(value)}</CustomTableCell>;
             })}
           </TableRow>
         ))

@@ -16,14 +16,28 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   const insertStatement = 'INSERT into "events" ("siteUUID", "type", "data") VALUES ($1, $2, $3)';
   const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
 
-  if (triggerDate) await db.none('UPDATE "events" set triggered = $1 where id = $2', [triggerDate, insertResult.id]);
+  if (triggerDate) {
+    await db.none('UPDATE "events" set triggered = $1 where id = $2', [
+      triggerDate,
+      insertResult.id
+    ]);
+  }
 };
 
 export const getEvents = async db => {
   try {
-    const events = await db.any('SELECT * FROM "events"'); 
-    return events; 
+    const events = await db.any('SELECT * FROM "events"');
+    return events;
   } catch (e) {
-    return []; 
+    return [];
   }
-}; 
+};
+
+export const getSites = async db => {
+  try {
+    const sites = await db.any('SELECT * FROM "sites"');
+    return sites;
+  } catch (e) {
+    return [];
+  }
+};

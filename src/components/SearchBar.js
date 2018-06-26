@@ -5,10 +5,11 @@ import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import SearchIcon from '@material-ui/icons/Search';
-import { requestSites, requestEvents, selectSite } from '../actions';
+import { requestEvents, requestEventTypes, requestSites, selectEventType, selectSite } from '../actions';
 
 const TopRow = styled.div`
   display: flex;
@@ -21,31 +22,44 @@ const TopRow = styled.div`
 class SearchBar extends Component {
   render() {
     const {
-      selectedSite,
-      sitesUUIDs,
+      eventTypes,
       isFetching,
       onRequestSites,
-      onRequestEvents,
+      onRequestEventTypes,
+      onSelectEventType,
       onSelectSite,
+      selectedSite,
+      selectedType,
+      sitesUUIDs,
     } = this.props;
     return (
       <TopRow>
+        <InputLabel >Site</InputLabel>
         <Select
           value={selectedSite}
           onClick={onRequestSites}
-          onChange={onSelectSite}
-          input={<Input style={{ width: '400px' }} />}
-        >
-          {sitesUUIDs.map(site => (
+          onChange={({target}) => onSelectSite(target.value, selectedType)}
+          input={<Input name="Site" style={{ width: '400px'}} />}>
+          {sitesUUIDs.map(site =>
             <MenuItem key={site} value={site}>
               {site}
             </MenuItem>
-          ))}
+          )}
         </Select>
-        <Button onClick={onRequestEvents}>
-          <SearchIcon />
-          Search
-        </Button>
+        <InputLabel >Event type</InputLabel>
+        <Select 
+          value={selectedType} 
+          onClick={onRequestEventTypes}
+          onChange={({target}) => onSelectEventType(target.value, selectedSite)}
+          input={<Input style={{ width: '100px'}} />}>
+          {eventTypes.map(eventType => 
+            <MenuItem 
+              key={eventType} 
+              value={eventType}> 
+                {eventType} 
+            </MenuItem>
+            )}
+          </Select>
         {isFetching && <CircularProgress />}
       </TopRow>
     );
@@ -53,28 +67,33 @@ class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
+  eventTypes: PropTypes.array,
   isFetching: PropTypes.bool,
   selectedSite: PropTypes.string,
   sitesUUIDs: PropTypes.array,
-  onRequestEvents: PropTypes.func.isRequired,
+  onRequestEventTypes: PropTypes.func.isRequired,
   onRequestSites: PropTypes.func.isRequired,
-  onSelectSite: PropTypes.func.isRequired,
+  onSelectEventType: PropTypes.func.isRequired,
+  onSelectSite: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
-  const { selectedSite, sitesUUIDs, isFetching } = state.sites;
+  const { isFetching, selectedSite, selectedType, sitesUUIDs } = state.sites;
+  const { eventTypes } = state.events;
   return {
+    eventTypes,
+    isFetching,
     selectedSite,
     sitesUUIDs,
-    isFetching,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    onRequestEventTypes: () => dispatch(requestEventTypes()),
     onRequestSites: siteUUID => dispatch(requestSites(siteUUID)),
-    onRequestEvents: siteUUID => dispatch(requestEvents(siteUUID)),
-    onSelectSite: ({ target: { name, value } }) => dispatch(selectSite(value)),
+    onSelectEventType: (type, siteUUID) => { dispatch(selectEventType(type)), dispatch(requestEvents({UUID: siteUUID, type}))},
+    onSelectSite: (siteUUID, type) => { dispatch(selectSite(siteUUID)), dispatch(requestEvents({UUID: siteUUID, type}))},
   };
 };
 

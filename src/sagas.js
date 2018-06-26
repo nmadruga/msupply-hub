@@ -1,36 +1,63 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
 import {
+  REQUEST_EVENT_TYPES,
   REQUEST_EVENTS,
   REQUEST_SITES,
+  fetchEventTypesError,
+  fetchEventTypesSuccess,
   fetchEventsError,
   fetchEventsSuccess,
   fetchSitesError,
   fetchSitesSuccess,
 } from './actions';
 
-function fetchGetApi(reddit, endpoint) {
-  return fetch(`http://localhost:4000/api/v1/` + endpoint, {
+function fetchGetApi(resourceUrl) {
+  const baseUrl = `http://localhost:4000/api/v1/`;
+  return fetch( baseUrl + resourceUrl, {
     method: 'get',
     headers: new Headers({
       Authorization:
         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiaW5pdCJ9.MXidBnzVRAvNNjMXMq1a9lfIf9B278_060GvUouKMbw',
-    }),
+    })
   }).then(response => response.json());
 }
 
-function* fetchSites(reddit) {
+function* fetchSites() {
+  const requestResourceUrl = `site`;
   try {
-    const data = yield call(fetchGetApi, reddit, 'site');
+    const data = yield call(fetchGetApi, requestResourceUrl);
     yield put(fetchSitesSuccess(data));
   } catch (error) {
     yield put(fetchSitesError(error.errorMessage));
   }
 }
 
-function* fetchEvents(reddit) {
+function* fetchEventTypes(action) {
+  const requestResourceUrl = `event`;
   try {
-    const data = yield call(fetchGetApi, reddit, 'event');
-    yield put(fetchEventsSuccess(data));
+    const data = yield call(fetchGetApi, requestResourceUrl);
+    let types = [];
+    data.result.forEach(obj => { if(!types.includes(obj.type)) types.push(obj.type)}); 
+    yield put(fetchEventTypesSuccess(types));
+  } catch (error) {
+    yield put(fetchEventTypesError(error.errorMessage));
+  }
+}
+
+function* fetchEvents(action) {
+  let requestResourceUrl = `event`;
+  let concatType = '?';
+  Object.entries(action.query).forEach(([key, value]) => {
+    if (value) {
+      requestResourceUrl += `${concatType}${key}=${value}`;
+      concatType = '&';
+    }
+  });
+  
+  try {
+    const data = yield call(fetchGetApi, requestResourceUrl);
+    if (data.result) yield put(fetchEventsSuccess(data));
+    else put(fetchEventsError(data.message));
   } catch (error) {
     yield put(fetchEventsError(error.errorMessage));
   }
@@ -39,6 +66,7 @@ function* fetchEvents(reddit) {
 function* mySaga() {
   yield takeLatest(REQUEST_SITES, fetchSites);
   yield takeLatest(REQUEST_EVENTS, fetchEvents);
+  yield takeLatest(REQUEST_EVENT_TYPES, fetchEventTypes);
 }
 
 export default mySaga;

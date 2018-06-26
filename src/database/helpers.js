@@ -1,5 +1,5 @@
 export const checkAddNewSite = async (db, UUID, siteInfo, newJWT) => {
-  const foundCount = await db.one('SELECT count(*) FROM "sites" where "UUID" = $1', [UUID]);
+  const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   if (foundCount.count !== '0') return false;
 
   const insertStatement = 'INSERT INTO "sites" ("UUID", jwt, data) VALUES ($1, $2, $3)';
@@ -8,7 +8,7 @@ export const checkAddNewSite = async (db, UUID, siteInfo, newJWT) => {
 };
 
 export const checkSiteExists = async (db, UUID) => {
-  const foundCount = await db.one('SELECT count(*) FROM "sites" where "UUID" = $1', [UUID]);
+  const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   return foundCount.count !== '0';
 };
 
@@ -24,9 +24,32 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   }
 };
 
-export const getEvents = async db => {
+const addStatement = function (whereOrAnd, key, index) {
+  return {
+    'UUID': ` ${whereOrAnd} "siteUUID" = $${index}`,
+    'type': ` ${whereOrAnd} "type" = $${index}`,
+    'startDate': ` ${whereOrAnd} "created" > $${index}`, 
+    'endDate':` ${whereOrAnd} "created" < $${index}`
+  }[key];
+}
+
+export const getEvents = async (db, {UUID, type, startDate, endDate}) => {
+  const args = {UUID, type, startDate, endDate};
+  let queryStatement = 'SELECT * FROM "events"';
+  let whereOrAnd = 'WHERE';
+  let index = 1;
+  Object.entries(args).forEach(([key, value]) => {
+    if (value) {
+      queryStatement += addStatement(whereOrAnd, key, index);
+      whereOrAnd = 'AND';
+      index++;
+    }
+  });
+
+  Object.keys(args).forEach(key => args[key] === undefined ? delete args[key] : '');
+
   try {
-    const events = await db.any('SELECT * FROM "events"');
+    const events = await db.any(queryStatement, Object.values(args));
     return events;
   } catch (e) {
     return [];

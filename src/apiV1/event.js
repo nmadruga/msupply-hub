@@ -18,14 +18,12 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 };
 
 // TODO: check if type is allowed and otherInfo is not null and is json
-
-// TODO: Allow filtering by: siteUUID, type, and created. 
-export const showEvents = ({ config,db }) => async (req, res, next) => {
+export const showEvents = ({ config, db }) => async (req, res, next) => {
   try {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundEvents = await getEvents(db); 
+    const foundEvents = await getEvents(db, req.query); 
     if(foundEvents.length === 0) return eventsNotFound(res); 
     return eventsFound(res, foundEvents); 
   } catch (e) {

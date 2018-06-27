@@ -35,22 +35,18 @@ class ResultTable extends Component {
 
   buildRows(events) {
     return events.length > 0
-      ? events.map((event, index) => (
+      ? <TableBody>
+        {events.map((event, index) => (
           <TableRow key={index}>
             {Object.values(event).map((value, indexElem) => {
-              if (typeof value === 'number')
-                return (
-                  <CustomTableCell key={indexElem} numeric>
-                    {value}
-                  </CustomTableCell>
-                );
-              if (typeof value === 'string')
-                return <CustomTableCell key={indexElem}>{value}</CustomTableCell>;
-              if (typeof value === 'object')
-                return <CustomTableCell key={indexElem}>{JSON.stringify(value)}</CustomTableCell>;
+              return {
+                'number': <CustomTableCell key={indexElem} numeric>{value}</CustomTableCell>,
+                'object': <CustomTableCell key={indexElem}>{JSON.stringify(value)}</CustomTableCell>
+              }[typeof value] || <CustomTableCell key={indexElem}>{value}</CustomTableCell>
             })}
           </TableRow>
-        ))
+        ))}
+      </TableBody>
       : null;
   }
 
@@ -60,7 +56,7 @@ class ResultTable extends Component {
       <Paper>
         <Table>
           <TableHead>{this.buildHeaders(events)}</TableHead>
-          <TableBody>{this.buildRows(events)}</TableBody>
+          {this.buildRows(events)}
         </Table>
       </Paper>
     );

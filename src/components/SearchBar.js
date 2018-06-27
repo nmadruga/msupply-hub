@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import SearchIcon from '@material-ui/icons/Search';
 import { requestEvents, requestEventTypes, requestSites, selectEventType, selectSite } from '../actions';
 
 const TopRow = styled.div`
@@ -38,28 +36,30 @@ class SearchBar extends Component {
         <Select
           value={selectedSite}
           onClick={onRequestSites}
-          onChange={({target}) => onSelectSite(target.value, selectedType)}
-          input={<Input name="Site" style={{ width: '400px'}} />}>
+          onChange={({ target }) => onSelectSite(target.value, selectedType)}
+          input={<Input style={{ width: '400px' }} />}>
           {sitesUUIDs.map(site =>
-            <MenuItem key={site} value={site}>
+            <MenuItem
+              key={site}
+              value={site}>
               {site}
             </MenuItem>
           )}
         </Select>
         <InputLabel >Event type</InputLabel>
-        <Select 
-          value={selectedType} 
+        <Select
+          value={selectedType}
           onClick={onRequestEventTypes}
-          onChange={({target}) => onSelectEventType(target.value, selectedSite)}
-          input={<Input style={{ width: '100px'}} />}>
-          {eventTypes.map(eventType => 
-            <MenuItem 
-              key={eventType} 
-              value={eventType}> 
-                {eventType} 
+          onChange={({ target }) => onSelectEventType(target.value, selectedSite)}
+          input={<Input style={{ width: '100px' }} />}>
+          {eventTypes.map(eventType =>
+            <MenuItem
+              key={eventType}
+              value={eventType}>
+              {eventType}
             </MenuItem>
-            )}
-          </Select>
+          )}
+        </Select>
         {isFetching && <CircularProgress />}
       </TopRow>
     );
@@ -78,12 +78,13 @@ SearchBar.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { isFetching, selectedSite, selectedType, sitesUUIDs } = state.sites;
-  const { eventTypes } = state.events;
+  const { isFetching, selectedSite, sitesUUIDs } = state.sites;
+  const { eventTypes, selectedType } = state.events;
   return {
     eventTypes,
     isFetching,
     selectedSite,
+    selectedType,
     sitesUUIDs,
   };
 };
@@ -92,8 +93,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onRequestEventTypes: () => dispatch(requestEventTypes()),
     onRequestSites: siteUUID => dispatch(requestSites(siteUUID)),
-    onSelectEventType: (type, siteUUID) => { dispatch(selectEventType(type)), dispatch(requestEvents({UUID: siteUUID, type}))},
-    onSelectSite: (siteUUID, type) => { dispatch(selectSite(siteUUID)), dispatch(requestEvents({UUID: siteUUID, type}))},
+    onSelectEventType: (type, siteUUID) => { dispatch(selectEventType(type)); dispatch(requestEvents({ UUID: siteUUID, type })); },
+    onSelectSite: (siteUUID, type) => { dispatch(selectSite(siteUUID)); dispatch(requestEvents({ UUID: siteUUID, type })); },
   };
 };
 

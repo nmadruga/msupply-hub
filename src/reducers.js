@@ -30,14 +30,12 @@ const sites = (
 ) => {
   switch (action.type) {
     case FETCH_SITES_ERROR:
-      console.log('FETCH_SITES_ERROR', action);
       return {
         ...state,
         isFetchingSites: false,
         message: action.message,
       };
     case FETCH_SITES_SUCCESS:
-      console.log('FETCH_SITES_SUCCESS', action);
       return {
         ...state,
         isFetchingSites: false,
@@ -45,13 +43,11 @@ const sites = (
         message: action.message,
       };
     case REQUEST_SITES:
-      console.log('REQUEST_SITES', action);
       return {
         ...state,
         isFetchingSites: true,
       };
     case SELECT_SITE:
-      console.log('SELECT_SITE', action);
       return {
         ...state,
         selectedSite: action.siteUUID,

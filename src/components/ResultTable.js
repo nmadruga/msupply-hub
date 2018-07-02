@@ -23,12 +23,11 @@ class ResultTable extends Component {
   buildHeaders(events) {
     return (
       <TableRow>
-        {events.length > 0 ? (
+        {events.length &&
           Object.keys(events[0]).map((key, index) => {
             const title = key.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
             return <CustomTableCell key={`title-${index}`}>{title}</CustomTableCell>;
-          })
-        ) : null}
+          })}
       </TableRow>
     );
   }

@@ -24,29 +24,43 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   }
 };
 
-const addStatement = function (whereOrAnd, key, index) {
+const addStatement = function (whereOrAnd, field, { key, value }, index) {
   return {
-    'UUID': ` ${whereOrAnd} "siteUUID" = $${index}`,
+    'site': ` ${whereOrAnd} "siteUUID" = $${index}`,
     'type': ` ${whereOrAnd} "type" = $${index}`,
-    'startDate': ` ${whereOrAnd} "created" > $${index}`, 
-    'endDate':` ${whereOrAnd} "created" < $${index}`
-  }[key];
+    'startDate': ` ${whereOrAnd} "created" > $${index}`,
+    'endDate': ` ${whereOrAnd} "created" < $${index}`
+  }[field];
 }
 
-export const getEvents = async (db, {UUID, type, startDate, endDate}) => {
-  const args = {UUID, type, startDate, endDate};
-  let queryStatement = 'SELECT * FROM "events"';
+const concatArgumentFields = function (args) {
+  let queryStatement = '';
   let whereOrAnd = 'WHERE';
   let index = 1;
+
   Object.entries(args).forEach(([key, value]) => {
-    if (value) {
-      queryStatement += addStatement(whereOrAnd, key, index);
+    // Special case to set key and value in same query statement
+    if (key === 'tagKey' && value) {
+      const { tagKey, tagValue } = args;
+      queryStatement += tagValue ? ` ${whereOrAnd} (events.data->>'${tagKey}') ilike '${tagValue}'` :
+        ` ${whereOrAnd} (events.data->'${tagKey}') IS NOT NULL`;
+      whereOrAnd = 'AND';
+    }
+    // For other cases of search using single field
+    if (key !== 'tagKey' && key !== 'tagValue' && value) {
+      queryStatement += addStatement(whereOrAnd, key, value, index);
       whereOrAnd = 'AND';
       index++;
     }
   });
 
-  Object.keys(args).forEach(key => args[key] === undefined ? delete args[key] : '');
+  return queryStatement;
+}
+
+export const getEvents = async (db, args) => {
+  const queryStatement = 'SELECT * FROM "events"' + concatArgumentFields(args);
+
+  Object.keys(args).forEach(key => key === 'tagKey' || key === 'tagValue' || args[key] === undefined ? delete args[key] : '');
 
   try {
     const events = await db.any(queryStatement, Object.values(args));
@@ -64,3 +78,14 @@ export const getSites = async db => {
     return [];
   }
 };
+
+export const getTags = async (db) => {
+  let queryStatement = 'SELECT key, json_object_agg(value, count) vals FROM (SELECT key, value, count(*) FROM "events", jsonb_each_text(events.data) GROUP BY 1,2 ) s GROUP BY 1';
+
+  try {
+    const tags = await db.any(queryStatement);
+    return tags;
+  } catch (e) {
+    return [];
+  }
+}

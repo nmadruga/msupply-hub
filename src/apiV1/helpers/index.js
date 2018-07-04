@@ -10,4 +10,6 @@ export {
   siteAdded,
   sitesFound,
   sitesNotFound,
+  tagsFound,
+  tagsNotFound
 } from './responses';

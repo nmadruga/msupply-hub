@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { requestEvents, requestEventTagKeys, requestEventTypes, requestSites, selectEventTagKey, selectEventTagValue, selectEventType, selectSite } from '../actions';
+import { requestEvents, requestEventTags, requestEventTypes, requestSites, selectEventTagKey, selectEventTagValue, selectEventType, selectSite } from '../actions';
 
 const Container = styled.div`
   display: flex;
@@ -25,17 +24,6 @@ const Row = styled.div`
   align-items: center;
 `;
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
 class SearchBar extends Component {
   render() {
     const {
@@ -43,7 +31,7 @@ class SearchBar extends Component {
       eventTypes,
       isFetchingEvents,
       onRequestSites,
-      onRequestEventTagKeys,
+      onRequestEventTags,
       onRequestEventTypes,
       onSelectEventTagKey,
       onSelectEventTagValue,
@@ -55,6 +43,9 @@ class SearchBar extends Component {
       selectedSite,
       sitesUUIDs,
     } = this.props;
+
+    const query = { site: selectedSite, type: selectedType, tagKey: selectedTagKey, tagValue: selectedTagValue };
+
     return (
       <Container>
         <Row>
@@ -62,7 +53,7 @@ class SearchBar extends Component {
           <Select
             value={selectedSite}
             onClick={onRequestSites}
-            onChange={({ target }) => onSelectSite(target.value)}
+            onChange={({ target }) => onSelectSite({ ...query, site: target.value })}
             input={<Input style={{ width: '400px', margin: '20px' }} />}>
             {sitesUUIDs.map(site =>
               <MenuItem
@@ -76,7 +67,7 @@ class SearchBar extends Component {
           <Select
             value={selectedType}
             onClick={onRequestEventTypes}
-            onChange={({ target }) => onSelectEventType(target.value)}
+            onChange={({ target }) => onSelectEventType({ ...query, type: target.value })}
             input={<Input style={{ width: '100px', margin: '20px' }} />}>
             {eventTypes.map(eventType =>
               <MenuItem
@@ -91,10 +82,10 @@ class SearchBar extends Component {
           <InputLabel sytle={{ textAligment: '50px' }} >Tags</InputLabel>
           <Select
             value={selectedTagKey}
-            onClick={onRequestEventTagKeys}
-            onChange={({ target }) => onSelectEventTagKey(target.value)}
-            input={<Input style={{ width: '100px', margin: '20px' }} />}>
-            {eventTags.map(tag =>
+            onClick={() => onRequestEventTags(query)}
+            onChange={({ target }) => onSelectEventTagKey({ ...query, tagKey: target.value })}
+            input={<Input style={{ width: '200px', margin: '20px' }} />}>
+            {eventTags && Object.keys(eventTags).map(tag =>
               <MenuItem
                 key={tag}
                 value={tag}>
@@ -105,14 +96,14 @@ class SearchBar extends Component {
           <InputLabel sytle={{ textAligment: '50px' }} >Values</InputLabel>
           <Select
             value={selectedTagValue}
-            disabled={(selectedTagKey) ? true : false}
-            onChange={({ target }) => onSelectEventTagValue(target.value)}
-            input={<Input style={{ width: '100px', margin: '20px' }} />}>
-            {selectedTagKey && eventTags[selectedTagKey].values(tagValue =>
+            disabled={selectedTagKey === ''}
+            onChange={({ target }) => onSelectEventTagValue({ ...query, tagValue: target.value })}
+            input={<Input style={{ width: '200px', margin: '20px' }} />}>
+            {selectedTagKey && Object.entries(eventTags[selectedTagKey]).map(value =>
               <MenuItem
-                key={tagValue}
-                value={tagValue}>
-                {tagValue}
+                key={value[0]}
+                value={value[0]}>
+                {value[0]}
               </MenuItem>
             )}
           </Select>
@@ -135,7 +126,7 @@ SearchBar.propTypes = {
   selectedTagValue: PropTypes.string,
   selectedType: PropTypes.string,
   sitesUUIDs: PropTypes.array,
-  onRequestEventTagKeys: PropTypes.func.isRequired,
+  onRequestEventTags: PropTypes.func.isRequired,
   onRequestEventTypes: PropTypes.func.isRequired,
   onRequestSites: PropTypes.func.isRequired,
   onSelectEventTagKey: PropTypes.func.isRequired,
@@ -145,29 +136,30 @@ SearchBar.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { selectedSite, sitesUUIDs } = state.sites;
-  const { isFetchingEvents, eventTags, eventTypes, selectedTagKey, selectedTagValue, selectedType } = state.events;
+  const { sitesUUIDs } = state.sites;
+  const { site, tagKey, tagValue, type } = state.search;
+  const { isFetchingEvents, eventTags, eventTypes } = state.events;
   return {
     eventTags,
     eventTypes,
     isFetchingEvents,
-    selectedSite,
-    selectedTagKey,
-    selectedTagValue,
-    selectedType,
+    selectedSite: site,
+    selectedTagKey: tagKey,
+    selectedTagValue: tagValue,
+    selectedType: type,
     sitesUUIDs,
   };
 };
 
-const mapDispatchToProps = (dispatch, state) => {
+const mapDispatchToProps = dispatch => {
   return {
-    onRequestEventTagKeys: () => dispatch(requestEventTagKeys(state.siteUUID, state.type)),
+    onRequestEventTags: query => dispatch(requestEventTags(query)),
     onRequestEventTypes: () => dispatch(requestEventTypes()),
     onRequestSites: siteUUID => dispatch(requestSites(siteUUID)),
-    onSelectEventTagKey: tagKey => dispatch(selectEventTagKey(tagKey)),
-    onSelectEventTagValue: tagValue => { dispatch(selectEventTagValue(tagValue)); dispatch(requestEvents({ UUID: state.selectedSite, type: state.selectedType, tagKey: state.selectedTagKey, tagValue })); },
-    onSelectEventType: type => { dispatch(selectEventType(type)); dispatch(requestEvents({ UUID: state.selectedSite, type })); },
-    onSelectSite: siteUUID => { dispatch(selectSite(siteUUID)); dispatch(requestEvents({ UUID: siteUUID, type: state.selectedType })); },
+    onSelectEventTagKey: query => { dispatch(selectEventTagKey(query.tagKey)); dispatch(requestEvents(query)); },
+    onSelectEventTagValue: query => { dispatch(selectEventTagValue(query.tagValue)); dispatch(requestEvents(query)); },
+    onSelectEventType: query => { dispatch(selectEventType(query.type)); dispatch(requestEvents(query)); },
+    onSelectSite: query => { dispatch(selectSite(query.site)); dispatch(requestEvents(query)); },
   };
 };
 

@@ -8,8 +8,6 @@ import {
   FETCH_EVENTS_SUCCESS,
   FETCH_SITES_ERROR,
   FETCH_SITES_SUCCESS,
-  REQUEST_EVENT_TAGS,
-  REQUEST_EVENT_TYPES,
   REQUEST_EVENTS,
   REQUEST_SITES,
   SELECT_EVENT_TAG_KEY,
@@ -22,7 +20,6 @@ const sites = (
   state = {
     isFetchingSites: false,
     isShowingList: true,
-    selectedSite: '',
     sitesUUIDs: [],
     message: '',
   },
@@ -30,14 +27,12 @@ const sites = (
 ) => {
   switch (action.type) {
     case FETCH_SITES_ERROR:
-      console.log('FETCH_SITES_ERROR', action);
       return {
         ...state,
         isFetchingSites: false,
         message: action.message,
       };
     case FETCH_SITES_SUCCESS:
-      console.log('FETCH_SITES_SUCCESS', action);
       return {
         ...state,
         isFetchingSites: false,
@@ -45,17 +40,46 @@ const sites = (
         message: action.message,
       };
     case REQUEST_SITES:
-      console.log('REQUEST_SITES', action);
       return {
         ...state,
         isFetchingSites: true,
       };
+    default:
+      return state;
+  }
+};
+
+const search = (
+  state = {
+    site: '',
+    tagKey: '',
+    tagValue: '',
+    type: '',
+  },
+  action,
+) => {
+  switch (action.type) {
     case SELECT_SITE:
-      console.log('SELECT_SITE', action);
       return {
         ...state,
-        selectedSite: action.siteUUID,
+        site: action.siteUUID,
       };
+    case SELECT_EVENT_TYPE:
+      return {
+        ...state,
+        type: action.eventType,
+      };
+    case SELECT_EVENT_TAG_KEY:
+      return {
+        ...state,
+        tagKey: action.eventTagKey,
+        tagValue: '',
+      }
+    case SELECT_EVENT_TAG_VALUE:
+      return {
+        ...state,
+        tagValue: action.eventTagValue,
+      }
     default:
       return state;
   }
@@ -64,13 +88,10 @@ const sites = (
 const events = (
   state = {
     data: [],
-    eventTags: [],
+    eventTags: undefined,
     eventTypes: [],
     isFetchingEvents: false,
     message: '',
-    selectedTagKey: '',
-    selectedTagValue: '',
-    selectedType: '',
   },
   action,
 ) => {
@@ -83,7 +104,10 @@ const events = (
     case FETCH_EVENT_TAGS_SUCCESS:
       return {
         ...state,
-        eventTags: action.eventTags,
+        eventTags: action.result.reduce((obj, item) => {
+          obj[item.key] = item.vals;
+          return obj;
+        }, {})
       };
     case FETCH_EVENT_TYPES_ERROR:
       return {
@@ -114,25 +138,6 @@ const events = (
         ...state,
         isFetchingEvents: true,
       };
-    case REQUEST_EVENT_TAGS:
-      return state;
-    case REQUEST_EVENT_TYPES:
-      return state;
-    case SELECT_EVENT_TYPE:
-      return {
-        ...state,
-        selectedType: action.eventType,
-      };
-    case SELECT_EVENT_TAG_KEY:
-      return {
-        ...state,
-        selectedTagKey: action.eventTagKey,
-      }
-    case SELECT_EVENT_TAG_VALUE:
-      return {
-        ...state,
-        selectedTagValue: action.eventTagValue,
-      }
     default:
       return state;
   }
@@ -140,6 +145,7 @@ const events = (
 
 const rootReducer = combineReducers({
   sites,
+  search,
   events,
 });
 

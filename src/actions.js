@@ -28,10 +28,11 @@ export function fetchEventTagsError(errorMessage) {
   };
 }
 
-export function fetchEventTagsSuccess(eventTags) {
+export function fetchEventTagsSuccess({ message, result }) {
   return {
     type: FETCH_EVENT_TAGS_SUCCESS,
-    eventTags,
+    message,
+    result
   };
 }
 
@@ -49,10 +50,10 @@ export function fetchEventTypesSuccess(types) {
   };
 }
 
-export function fetchEventsError(errorMessage) {
+export function fetchEventsError(message) {
   return {
     type: FETCH_EVENTS_ERROR,
-    errorMessage,
+    message,
   };
 }
 
@@ -79,9 +80,10 @@ export function fetchSitesSuccess({ message, result }) {
   };
 }
 
-export function requestEventTagKeys() {
+export function requestEventTags(query) {
   return {
     type: REQUEST_EVENT_TAGS,
+    query
   };
 }
 

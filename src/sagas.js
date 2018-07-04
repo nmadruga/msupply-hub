@@ -36,12 +36,10 @@ function* fetchSites() {
 }
 
 function* fetchEventTags(action) {
-  const requestResourceUrl = 'tagKeys';
+  const requestResourceUrl = 'tags';
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
-    let eventTagKeys = [];
-    data.result.forEach(obj => { if (!eventTagKeys.includes(obj.key)) eventTagKeys.push(obj.key) });
-    yield put(fetchEventTagsSuccess(eventTagKeys));
+    yield put(fetchEventTagsSuccess(data));
   } catch (error) {
     yield put(fetchEventTagsError(error.errorMessage));
   }
@@ -63,14 +61,13 @@ function* fetchEvents(action) {
   let requestResourceUrl = 'event';
   let concatType = '?';
   Object.entries(action.query).forEach(([key, value]) => {
-    if (value) {
-      requestResourceUrl += `${concatType}${key}=${value}`;
-      concatType = '&';
-    }
+    requestResourceUrl += `${concatType}${key}=${value}`;
+    concatType = '&';
   });
 
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
+
     if (data.result) yield put(fetchEventsSuccess(data));
     else put(fetchEventsError(data.message));
   } catch (error) {

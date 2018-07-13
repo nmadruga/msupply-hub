@@ -32,9 +32,10 @@ export const showEvents = ({ config, db }) => async (req, res, next) => {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundEvents = await getEvents(db, req.query);
-    if (foundEvents.length === 0) return eventsNotFound(res);
-    return eventsFound(res, foundEvents);
+    return foundEvents.length === 0
+      ? eventsNotFound(res)
+      : eventsFound(res, foundEvents);
+
   } catch (e) {
     return next(e);
   }
@@ -45,9 +46,10 @@ export const getEventTags = ({ config, db }) => async (req, res, next) => {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundTagKeys = await getTags(db, req.query);
-    if (foundTagKeys.length === 0) return tagsNotFound(res);
-    return tagsFound(res, foundTagKeys);
+    return foundTagKeys.length === 0
+      ? tagsNotFound(res)
+      : tagsFound(res, foundTagKeys);
+
   } catch (e) {
     return next(e);
   }

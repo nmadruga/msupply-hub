@@ -1,4 +1,13 @@
-import { decodeJWT, missingAuthHeaderOrJWT, UUIDNotRegistered, eventAdded, eventsFound, eventsNotFound } from './helpers';
+import {
+  decodeJWT,
+  missingAuthHeaderOrJWT,
+  UUIDNotRegistered,
+  eventAdded,
+  eventsFound,
+  eventsNotFound,
+  tagsFound,
+  tagsNotFound,
+} from './helpers';
 import { checkSiteExists, addEvent, getEvents } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
@@ -8,7 +17,8 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
     const UUID = decodedToken.UUID;
     const { type, triggerDate, ...otherInfo } = req.body;
-    if (decodedToken.type !== 'site' || !await checkSiteExists(db, UUID)) return UUIDNotRegistered(res);
+    if (decodedToken.type !== 'site' || !(await checkSiteExists(db, UUID)))
+      return UUIDNotRegistered(res);
 
     await addEvent(db, UUID, type, triggerDate, otherInfo);
     return eventAdded(res);
@@ -17,19 +27,30 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
   }
 };
 
-// TODO: check if type is allowed and otherInfo is not null and is json
-
-// TODO: Allow filtering by: siteUUID, type, and created. 
-export const showEvents = ({ config,db }) => async (req, res, next) => {
+export const showEvents = ({ config, db }) => async (req, res, next) => {
   try {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundEvents = await getEvents(db); 
-    if(foundEvents.length === 0) return eventsNotFound(res); 
-    return eventsFound(res, foundEvents); 
+    return foundEvents.length === 0
+      ? eventsNotFound(res)
+      : eventsFound(res, foundEvents);
+
   } catch (e) {
-    return next (e); 
+    return next(e);
   }
 };
 
+export const getEventTags = ({ config, db }) => async (req, res, next) => {
+  try {
+    const decodedToken = decodeJWT(req.headers.authorization, config);
+    if (!decodedToken) return missingAuthHeaderOrJWT(res);
+
+    return foundTagKeys.length === 0
+      ? tagsNotFound(res)
+      : tagsFound(res, foundTagKeys);
+
+  } catch (e) {
+    return next(e);
+  }
+};

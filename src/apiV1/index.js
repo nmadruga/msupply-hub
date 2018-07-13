@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { postSite, showSites } from './site';
-import { postEvent, showEvents } from './event';
+import { getEventTags, postEvent, showEvents } from './event';
 
 export default opts => {
   const api = Router();
@@ -10,6 +10,7 @@ export default opts => {
 
   api.get('/event', showEvents(opts));
   api.get('/site', showSites(opts));
+  api.get('/tags', getEventTags(opts));
 
   return api;
 };

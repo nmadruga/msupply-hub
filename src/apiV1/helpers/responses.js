@@ -54,3 +54,16 @@ export const sitesNotFound = res =>
     authorized: true,
     message: 'No sites found in search',
   });
+
+export const tagsFound = (res, tags) =>
+  res.send({
+    authorized: true,
+    message: `Number of tags found: ${tags.length}`,
+    result: tags,
+  });
+
+export const tagsNotFound = res =>
+  res.status(401).send({
+    authorized: true,
+    message: 'No tags found in search',
+  });

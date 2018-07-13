@@ -1,2 +1,10 @@
 export { default } from './initDB';
-export { checkAddNewSite, checkSiteExists, addEvent, getEvents, getSites } from './helpers';
+export {
+  checkAddNewSite,
+  checkSiteExists,
+  addEvent,
+  getEvents,
+  getEventTagKeys,
+  getSites,
+  getTags,
+} from './helpers';

@@ -10,7 +10,7 @@ export default opts => {
 
   api.get('/event', showEvents(opts));
   api.get('/site', showSites(opts));
-  api.get('/tags', getTagKeys(opts));
+  api.get('/tags', getEventTags(opts));
 
   return api;
 };

@@ -1,5 +1,5 @@
 {
-  "port": 3000,
+  "port": 4000,
   "bodyLimit": "100kb",
   "logFileName": "./log/logfile.log",
   "jwtSecret": "secret",

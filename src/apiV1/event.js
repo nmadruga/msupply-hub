@@ -1,5 +1,14 @@
-import { decodeJWT, missingAuthHeaderOrJWT, UUIDNotRegistered, eventAdded, eventsFound, eventsNotFound, tagsFound, tagsNotFound } from './helpers';
-import { checkSiteExists, addEvent, getEvents, getTags } from '../database';
+import {
+  decodeJWT,
+  missingAuthHeaderOrJWT,
+  UUIDNotRegistered,
+  eventAdded,
+  eventsFound,
+  eventsNotFound,
+  tagsFound,
+  tagsNotFound,
+} from './helpers';
+import { checkSiteExists, addEvent, getEvents } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -8,7 +17,8 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
     const UUID = decodedToken.UUID;
     const { type, triggerDate, ...otherInfo } = req.body;
-    if (decodedToken.type !== 'site' || !await checkSiteExists(db, UUID)) return UUIDNotRegistered(res);
+    if (decodedToken.type !== 'site' || !(await checkSiteExists(db, UUID)))
+      return UUIDNotRegistered(res);
 
     await addEvent(db, UUID, type, triggerDate, otherInfo);
     return eventAdded(res);
@@ -42,4 +52,3 @@ export const getEventTags = ({ config, db }) => async (req, res, next) => {
     return next(e);
   }
 };
-

@@ -79,10 +79,9 @@ export function fetchSitesSuccess({ message, result }) {
   };
 }
 
-export function requestEventTags(query) {
+export function requestEventTags() {
   return {
     type: REQUEST_EVENT_TAGS,
-    query
   };
 }
 
@@ -92,17 +91,15 @@ export function requestEventTypes() {
   };
 }
 
-export function requestEvents(query) {
+export function requestEvents() {
   return {
     type: REQUEST_EVENTS,
-    query
   };
 }
 
-export function requestSites(siteUUID) {
+export function requestSites() {
   return {
     type: REQUEST_SITES,
-    siteUUID,
   };
 }
 

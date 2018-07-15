@@ -1,4 +1,5 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
+import { getQuery } from './selector';
 import {
   REQUEST_EVENT_TAGS,
   REQUEST_EVENT_TYPES,
@@ -61,15 +62,10 @@ function* fetchEventTypes(action) {
 
 function* fetchEvents(action) {
   let requestResourceUrl = 'event';
-  let concatType = '?';
-  Object.entries(action.query).forEach(([key, value]) => {
-    requestResourceUrl += `${concatType}${key}=${value}`;
-    concatType = '&';
-  });
+  requestResourceUrl += yield select(getQuery);
 
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
-
     if (data.result) yield put(fetchEventsSuccess(data));
     else put(fetchEventsError(data.message));
   } catch (error) {

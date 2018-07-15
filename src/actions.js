@@ -28,11 +28,10 @@ export function fetchEventTagsError(errorMessage) {
   };
 }
 
-export function fetchEventTagsSuccess({ message, result }) {
+export function fetchEventTagsSuccess(eventTags) {
   return {
     type: FETCH_EVENT_TAGS_SUCCESS,
-    message,
-    result
+    eventTags,
   };
 }
 

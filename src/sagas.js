@@ -39,7 +39,9 @@ function* fetchEventTags(action) {
   const requestResourceUrl = 'tags';
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
-    yield put(fetchEventTagsSuccess(data));
+    let tagsAndValues = {};
+    data.result.map(obj => tagsAndValues[obj.key] = obj.vals);
+    yield put(fetchEventTagsSuccess(tagsAndValues));
   } catch (error) {
     yield put(fetchEventTagsError(error.errorMessage));
   }

@@ -99,11 +99,11 @@ class SearchBar extends Component {
             disabled={selectedTagKey === ''}
             onChange={({ target }) => onSelectEventTagValue({ ...query, tagValue: target.value })}
             input={<Input style={{ width: '200px', margin: '20px' }} />}>
-            {selectedTagKey && Object.entries(eventTags[selectedTagKey]).map(value =>
+            {selectedTagKey && Object.keys(eventTags[selectedTagKey]).map(tagValue =>
               <MenuItem
-                key={value[0]}
-                value={value[0]}>
-                {value[0]}
+                key={tagValue}
+                value={tagValue}>
+                {tagValue}
               </MenuItem>
             )}
           </Select>

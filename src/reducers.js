@@ -104,10 +104,7 @@ const events = (
     case FETCH_EVENT_TAGS_SUCCESS:
       return {
         ...state,
-        eventTags: action.result.reduce((obj, item) => {
-          obj[item.key] = item.vals;
-          return obj;
-        }, {})
+        eventTags: action.eventTags,
       };
     case FETCH_EVENT_TYPES_ERROR:
       return {

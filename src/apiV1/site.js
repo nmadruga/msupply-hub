@@ -35,6 +35,7 @@ export const showSites = ({ config, db }) => async (req, res, next) => {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
+    const foundSites = await getSites(db);
     return foundSites.length === 0
       ? sitesNotFound(res)
       : sitesFound(res, foundSites);

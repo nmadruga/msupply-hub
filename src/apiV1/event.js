@@ -8,7 +8,7 @@ import {
   tagsFound,
   tagsNotFound,
 } from './helpers';
-import { checkSiteExists, addEvent, getEvents } from '../database';
+import { checkSiteExists, addEvent, getEvents, getTags } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -32,6 +32,7 @@ export const showEvents = ({ config, db }) => async (req, res, next) => {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
+    const foundEvents = await getEvents(db, req.query);
     return foundEvents.length === 0
       ? eventsNotFound(res)
       : eventsFound(res, foundEvents);
@@ -46,6 +47,7 @@ export const getEventTags = ({ config, db }) => async (req, res, next) => {
     const decodedToken = decodeJWT(req.headers.authorization, config);
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
+    const foundTagKeys = await getTags(db);
     return foundTagKeys.length === 0
       ? tagsNotFound(res)
       : tagsFound(res, foundTagKeys);

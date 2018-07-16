@@ -36,7 +36,10 @@ const sites = (
       return {
         ...state,
         isFetchingSites: false,
-        sitesData: action.result.reduce((obj, site) => ({...obj}, {[site.UUID]: site.data}), {}),
+        sitesData: action.result.reduce((obj, site) => {
+          obj[site.UUID] = site.data;
+           return obj;
+        }, {}),
         message: action.message,
       };
     case REQUEST_SITES:

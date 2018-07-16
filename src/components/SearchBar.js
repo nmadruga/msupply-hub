@@ -45,8 +45,6 @@ class SearchBar extends Component {
       sitesData,
     } = this.props;
 
-
-
     return (
       <Container>
         <Row>

@@ -15,6 +15,7 @@ const Container = styled.div`
   flex-grow: 1;
   flex-direction: column;
   align-items: center;
+  margin: 20px;
 `;
 
 const Row = styled.div`
@@ -41,19 +42,21 @@ class SearchBar extends Component {
       selectedTagValue,
       selectedType,
       selectedSite,
-      sitesUUIDs,
+      sitesData,
     } = this.props;
+
+
 
     return (
       <Container>
         <Row>
-          <InputLabel sytle={{ textAligment: '50px' }} >Site</InputLabel>
+          <InputLabel>Site</InputLabel>
           <Select
             value={selectedSite}
             onClick={onRequestSites}
             onChange={({ target }) => onSelectSite(target.value)}
             input={<Input style={{ width: '400px', margin: '20px' }} />}>
-            {sitesUUIDs.map(site =>
+            {Object.keys(sitesData).map(site =>
               <MenuItem
                 key={site}
                 value={site}>
@@ -61,7 +64,7 @@ class SearchBar extends Component {
               </MenuItem>
             )}
           </Select>
-          <InputLabel >Event type</InputLabel>
+          <InputLabel>Event type</InputLabel>
           <Select
             value={selectedType}
             onClick={onRequestEventTypes}
@@ -77,7 +80,7 @@ class SearchBar extends Component {
           </Select>
         </Row>
         <Row>
-          <InputLabel sytle={{ textAligment: '50px' }} >Tags</InputLabel>
+          <InputLabel>Tags</InputLabel>
           <Select
             value={selectedTagKey}
             onClick={onRequestEventTags}
@@ -91,7 +94,7 @@ class SearchBar extends Component {
               </MenuItem>
             )}
           </Select>
-          <InputLabel sytle={{ textAligment: '50px' }} >Values</InputLabel>
+          <InputLabel>Values</InputLabel>
           <Select
             value={selectedTagValue}
             disabled={selectedTagKey === ''}
@@ -113,7 +116,7 @@ class SearchBar extends Component {
 }
 
 SearchBar.propTypes = {
-  eventTags: PropTypes.array,
+  eventTags: PropTypes.object,
   eventTypes: PropTypes.array,
   isFetchingEvents: PropTypes.bool,
   isFetchingTags: PropTypes.bool,
@@ -123,7 +126,7 @@ SearchBar.propTypes = {
   selectedTagKey: PropTypes.string,
   selectedTagValue: PropTypes.string,
   selectedType: PropTypes.string,
-  sitesUUIDs: PropTypes.array,
+  sitesData: PropTypes.object,
   onRequestEventTags: PropTypes.func.isRequired,
   onRequestEventTypes: PropTypes.func.isRequired,
   onRequestSites: PropTypes.func.isRequired,
@@ -134,7 +137,7 @@ SearchBar.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { sitesUUIDs } = state.sites;
+  const { sitesData } = state.sites;
   const { site, tagKey, tagValue, type } = state.search;
   const { isFetchingEvents, eventTags, eventTypes } = state.events;
   return {
@@ -145,7 +148,7 @@ const mapStateToProps = state => {
     selectedTagKey: tagKey,
     selectedTagValue: tagValue,
     selectedType: type,
-    sitesUUIDs,
+    sitesData,
   };
 };
 

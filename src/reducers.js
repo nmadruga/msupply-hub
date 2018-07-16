@@ -20,7 +20,7 @@ const sites = (
   state = {
     isFetchingSites: false,
     isShowingList: true,
-    sitesUUIDs: [],
+    sitesData: {},
     message: '',
   },
   action,
@@ -36,7 +36,7 @@ const sites = (
       return {
         ...state,
         isFetchingSites: false,
-        sitesUUIDs: action.result.map(site => site.UUID),
+        sitesData: action.result.reduce((obj, site) => ({...obj}, {[site.UUID]: site.data}), {}),
         message: action.message,
       };
     case REQUEST_SITES:

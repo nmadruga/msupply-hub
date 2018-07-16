@@ -30,6 +30,8 @@ function* fetchSites() {
   const requestResourceUrl = 'site';
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
+    console.log('sites', data);
+    
     yield put(fetchSitesSuccess(data));
   } catch (error) {
     yield put(fetchSitesError(error.errorMessage));

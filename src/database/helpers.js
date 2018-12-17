@@ -26,7 +26,7 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   }
 };
 
-const addStatement = function(whereOrAnd, field, { key, value }, index) {
+const addStatement = function (whereOrAnd, field, { key, value }, index) {
   return {
     site: ` ${whereOrAnd} "siteUUID" = $${index}`,
     type: ` ${whereOrAnd} "type" = $${index}`,
@@ -35,7 +35,7 @@ const addStatement = function(whereOrAnd, field, { key, value }, index) {
   }[field];
 };
 
-const concatArgumentFields = function(args) {
+const concatArgumentFields = function (args) {
   let queryStatement = '';
   let whereOrAnd = 'WHERE';
   let index = 1;

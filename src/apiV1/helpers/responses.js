@@ -42,22 +42,22 @@ export const siteAdded = (res, newJWT) =>
     message: 'site added successfully',
   });
 
-export const siteMacAddressMaching = res =>
+export const siteMachineUUIDMatching = res =>
   res.send({
     authorized: true,
-    message: `Site matches UUID and MAC Address`,
+    message: `Site matches UUID and Machine UUID`,
   });
 
-export const siteMacAddressNotMaching = res =>
-  res.send({
+export const siteMachineUUIDNotMatching = res =>
+  res.status(406).send({
     authorized: true,
-    message: `Site UUID doesn't match MAC Address`,
+    message: `Site UUID doesn't match Machine UUID`,
   });
 
 export const siteUUIDNotFound = res =>
-  res.status(401).send({
+  res.status(404).send({
     authorized: true,
-    message: 'No site found with UUID',
+    message: 'No site found with this UUID',
   });
 
 export const tagsFound = (res, tags) =>

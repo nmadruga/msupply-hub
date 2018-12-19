@@ -8,8 +8,8 @@ export {
   eventsFound,
   eventsNotFound,
   siteAdded,
-  siteMacAddressMaching,
-  siteMacAddressNotMaching,
+  siteMachineUUIDMatching,
+  siteMachineUUIDNotMatching,
   siteUUIDNotFound,
   tagsFound,
   tagsNotFound

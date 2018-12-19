@@ -4,8 +4,8 @@ import {
   missingAuthHeaderOrJWT,
   UUIDAlreadyExists,
   siteAdded,
-  siteMacAddressMaching,
-  siteMacAddressNotMaching,
+  siteMachineUUIDMatching,
+  siteMachineUUIDNotMatching,
   siteUUIDNotFound
 } from './helpers';
 import { checkAddNewSite, getSites } from '../database';
@@ -37,15 +37,15 @@ export const getSite = ({ config, db }) => async (req, res, next) => {
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
     const findUUID = req.params.UUID;
-    const findMAC = req.body.MAC;
+    const findMachineUUID = req.body.machineUUID;
 
     const foundSites = await getSites(db);
     const matchingSite = foundSites.find(({ UUID }) => findUUID === UUID)
 
     if (matchingSite)
-      return (!matchingSite.MacAddress || findMAC === matchingSite.MacAddress)
-        ? siteMacAddressMaching(res)
-        : siteMacAddressNotMaching(res);
+      return (matchingSite.machineUUID === "" || findMachineUUID === matchingSite.machineUUID)
+        ? siteMachineUUIDMatching(res)
+        : siteMachineUUIDNotMatching(res);
     else
       return siteUUIDNotFound(res);
   } catch (e) {

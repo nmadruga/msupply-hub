@@ -1,5 +1,36 @@
 import 'regenerator-runtime/runtime';
 
+export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
+  const insertStatement = 'INSERT into "events" ("siteUUID", "type", "data") VALUES ($1, $2, $3)';
+  const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
+
+  if (triggerDate) {
+    await db.none('UPDATE "events" set triggered = $1 where id = $2', [
+      triggerDate,
+      insertResult.id,
+    ]);
+  }
+};
+
+export const addMachineToSite = async (db, UUID, machineUUID) => {
+  const foundMachineUUID = await db.one('SELECT "data.machineUUID" FROM "sites" WHERE "UUID" = $1', [UUID]);
+  if (foundMachineUUID === '0') return false;
+
+  const updateStatement = 'UPDATE table "sites" SET "data.machineUUID" = $1 WHERE "UUID" = $2';
+
+  await db.none(updateStatement, [machineUUID, UUID]);
+  return true;
+}
+
+const addStatement = function (whereOrAnd, field, { key, value }, index) {
+  return {
+    site: ` ${whereOrAnd} "siteUUID" = $${index}`,
+    type: ` ${whereOrAnd} "type" = $${index}`,
+    startDate: ` ${whereOrAnd} "created" > $${index}`,
+    endDate: ` ${whereOrAnd} "created" < $${index}`,
+  }[field];
+};
+
 export const checkAddNewSite = async (db, UUID, siteInfo, newJWT) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   if (foundCount.count !== '0') return false;
@@ -14,26 +45,11 @@ export const checkSiteExists = async (db, UUID) => {
   return foundCount.count !== '0';
 };
 
-export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
-  const insertStatement = 'INSERT into "events" ("siteUUID", "type", "data") VALUES ($1, $2, $3)';
-  const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
-
-  if (triggerDate) {
-    await db.none('UPDATE "events" set triggered = $1 where id = $2', [
-      triggerDate,
-      insertResult.id,
-    ]);
-  }
-};
-
-const addStatement = function (whereOrAnd, field, { key, value }, index) {
-  return {
-    site: ` ${whereOrAnd} "siteUUID" = $${index}`,
-    type: ` ${whereOrAnd} "type" = $${index}`,
-    startDate: ` ${whereOrAnd} "created" > $${index}`,
-    endDate: ` ${whereOrAnd} "created" < $${index}`,
-  }[field];
-};
+export const checkSiteMatchesMachine = async (db, UUID, machineUUID) => {
+  const foundMachineUUID = await db.one('SELECT "machineUUID" from "sites" WHERE "UUID" = $1', [UUID]);
+  console.log('checkSiteMatchesMachine', foundMachineUUID);
+  return foundMachineUUID.count !== '0';
+}
 
 const concatArgumentFields = function (args) {
   let queryStatement = '';
@@ -84,6 +100,15 @@ export const getSites = async db => {
     return [];
   }
 };
+
+export const getSiteMachine = async (db, UUID) => {
+  try {
+    const site = await db.one('SELECT * FROM "sites" WHERE "UUID" = $1', [UUID]);
+    return site.data.machineUUID;
+  } catch (e) {
+    return "";
+  }
+}
 
 export const getTags = async db => {
   let queryStatement =

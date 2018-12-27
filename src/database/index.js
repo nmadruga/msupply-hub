@@ -1,10 +1,13 @@
 export { default } from './initDB';
 export {
+  addEvent,
+  addMachineToSite,
   checkAddNewSite,
   checkSiteExists,
-  addEvent,
+  checkSiteMatchesMachine,
   getEvents,
   getEventTagKeys,
   getSites,
+  getSiteMachine,
   getTags,
 } from './helpers';

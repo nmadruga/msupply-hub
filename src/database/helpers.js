@@ -12,7 +12,7 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   }
 };
 
-export const addMachineToSite = async (db, UUID, machineUUID) => {
+export const addSiteMatchingMachine = async (db, UUID, machineUUID) => {
   const updateStatement = `UPDATE "sites" SET data = jsonb_set(data, '{machineUUID}', '$1') WHERE "UUID" = $2`;
 
   await db.none(updateStatement, [machineUUID, UUID]);
@@ -117,3 +117,10 @@ export const getTags = async db => {
     return [];
   }
 };
+
+export const resetSiteMatchingMachine = async (db, UUID) => {
+  const updateStatement = `UPDATE "sites" SET data = data - 'machineUUID' WHERE "UUID" = $1`;
+
+  await db.none(updateStatement, [UUID]);
+  return true;
+}

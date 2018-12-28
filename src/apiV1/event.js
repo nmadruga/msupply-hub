@@ -9,7 +9,7 @@ import {
   tagsNotFound,
   siteMachineUUIDNotMatching,
 } from './helpers';
-import { addEvent, addMachineToSite, checkSiteExists, checkSiteMatchesMachine, getEvents, getSiteMachine, getTags } from '../database';
+import { addEvent, addSiteMatchingMachine, checkSiteExists, checkSiteMatchesMachine, getEvents, getSiteMachine, getTags } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -24,7 +24,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
       return UUIDNotRegistered(res);
 
     if (!await getSiteMachine(db, UUID)) // Checks if there is no machine UUID associatedn with this site
-      await addMachineToSite(db, UUID, machineUUID)
+      await addSiteMatchingMachine(db, UUID, machineUUID)
 
     if (!await checkSiteMatchesMachine(db, UUID, machineUUID)) // If existing site & machine are not matching return error
       return siteMachineUUIDNotMatching(res);

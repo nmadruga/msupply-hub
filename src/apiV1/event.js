@@ -19,6 +19,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
     const UUID = decodedToken.UUID;
     const machineUUID = decodeJWT.machineUUID;
     const { type, triggerDate, ...otherInfo } = req.body;
+
     if (decodedToken.type !== 'site' || !(await checkSiteExists(db, UUID)))
       return UUIDNotRegistered(res);
 

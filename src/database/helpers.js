@@ -13,10 +13,7 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
 };
 
 export const addMachineToSite = async (db, UUID, machineUUID) => {
-  const foundMachineUUID = await db.one('SELECT "data.machineUUID" FROM "sites" WHERE "UUID" = $1', [UUID]);
-  if (foundMachineUUID === '0') return false;
-
-  const updateStatement = 'UPDATE table "sites" SET "data.machineUUID" = $1 WHERE "UUID" = $2';
+  const updateStatement = `UPDATE "sites" SET data = jsonb_set(data, '{machineUUID}', '$1') WHERE "UUID" = $2`;
 
   await db.none(updateStatement, [machineUUID, UUID]);
   return true;
@@ -46,9 +43,8 @@ export const checkSiteExists = async (db, UUID) => {
 };
 
 export const checkSiteMatchesMachine = async (db, UUID, machineUUID) => {
-  const foundMachineUUID = await db.one('SELECT "machineUUID" from "sites" WHERE "UUID" = $1', [UUID]);
-  console.log('checkSiteMatchesMachine', foundMachineUUID);
-  return foundMachineUUID.count !== '0';
+  const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
+  return foundEntry.machineUUID === machineUUID;
 }
 
 const concatArgumentFields = function (args) {

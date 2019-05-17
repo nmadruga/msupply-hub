@@ -16,10 +16,12 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
     const UUID = req.params.UUID;
+    const machineUUID = req.body.machineUUID;
     const newJWT = encodeJWT(
       {
         type: 'site',
         UUID,
+        machineUUID
       },
       config
     );

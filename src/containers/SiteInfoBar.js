@@ -2,45 +2,55 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import InputLabel from '@material-ui/core/InputLabel';
-
-const Container = styled.div`
-  width: 200px;
-  display: flex;
-  flex-shrink:3;
-  flex-direction: column;
-  align-items: left;
-  margin: 20px;
-`;
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
+import FolderIcon from '@material-ui/icons/Folder';
 
 class SiteInfoBar extends PureComponent {
-    render() {
-        const { sitesData, selectedSite } = this.props;
-        const data = sitesData[selectedSite];
+  render() {
+    const { sitesData, selectedSite } = this.props;
+    const data = sitesData[selectedSite];
 
-        return (
-            <Container>
-                {selectedSite && Object.entries(data).map(([key, value]) =>
-                <InputLabel style={{ width: '200px', paddingBottom: '10px' }}>
-                    {key + ': ' + value}
-                </InputLabel>)}
-            </Container>
-        );
-    }
-};
+    return (
+      <Grid container spacing={16}>
+        <Grid item xs={12} md={6}>
+          <div>
+            <List>
+              {selectedSite &&
+                Object.entries(data).map(([key, value]) => (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <FolderIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText primary={key} secondary={value} />
+                  </ListItem>
+                ))}
+            </List>
+          </div>
+        </Grid>
+      </Grid>
+    );
+  }
+}
 
 SiteInfoBar.propTypes = {
-    selectedSite: PropTypes.string,
-    sites: PropTypes.array,
+  selectedSite: PropTypes.string,
+  sites: PropTypes.array,
 };
 
 const mapStateToProps = state => {
-    const { sitesData } = state.sites;
-    const { site } = state.search;
-    return {
-      selectedSite: site,
-      sitesData,
-    };
+  const { sitesData } = state.sites;
+  const { site } = state.search;
+  return {
+    selectedSite: site,
+    sitesData,
   };
+};
 
 export default connect(mapStateToProps)(SiteInfoBar);

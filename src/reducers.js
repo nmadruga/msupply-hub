@@ -38,7 +38,7 @@ const sites = (
         isFetchingSites: false,
         sitesData: action.result.reduce((obj, site) => {
           obj[site.UUID] = site.data;
-           return obj;
+          return obj;
         }, {}),
         message: action.message,
       };
@@ -77,12 +77,12 @@ const search = (
         ...state,
         tagKey: action.eventTagKey,
         tagValue: '',
-      }
+      };
     case SELECT_EVENT_TAG_VALUE:
       return {
         ...state,
         tagValue: action.eventTagValue,
-      }
+      };
     default:
       return state;
   }

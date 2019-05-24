@@ -16,8 +16,7 @@ class SiteInfoBar extends PureComponent {
     const data = sitesData[selectedSite];
 
     return (
-      <Grid container spacing={16}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={6} md={3}>
           <div>
             <List>
               {selectedSite &&
@@ -34,7 +33,6 @@ class SiteInfoBar extends PureComponent {
             </List>
           </div>
         </Grid>
-      </Grid>
     );
   }
 }

@@ -67,7 +67,7 @@ function* fetchEvents(action) {
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
     if (data.result) yield put(fetchEventsSuccess(data));
-    else put(fetchEventsError(data.message));
+    else yield put(fetchEventsError(data.message)); 
   } catch (error) {
     yield put(fetchEventsError(error.errorMessage));
   }

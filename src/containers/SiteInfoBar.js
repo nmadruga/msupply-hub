@@ -16,7 +16,7 @@ class SiteInfoBar extends PureComponent {
     const data = sitesData[selectedSite];
 
     return (
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={3} style={{margin: '50px', alignContent:'center'}}>
           <div>
             <List>
               {selectedSite &&

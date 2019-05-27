@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import mySaga from './sagas';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
-import './App.css';
-import { Main } from './components';
+import { Main } from './containers';
 
 const store = configureStore();
 store.runSaga(mySaga);

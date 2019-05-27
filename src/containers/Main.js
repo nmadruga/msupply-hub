@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
-import SearchBar from './SearchBar';
-import ResultTable from './ResultTable';
+import { ResultTable, SearchBar } from '../components';
+import { SiteInfoBar } from '../containers';
 
 const FlexDiv = styled.div`
   flex: 1;
@@ -9,11 +9,19 @@ const FlexDiv = styled.div`
   flex-direction: column;
 `;
 
+const TopDiv = styled.div`
+  display flex;
+  flex-wrap: wrap;
+`;
+
 export class Main extends PureComponent {
   render() {
     return (
       <FlexDiv>
-        <SearchBar />
+        <TopDiv>
+          <SiteInfoBar />
+          <SearchBar />
+        </TopDiv>
         <ResultTable />
       </FlexDiv>
     );

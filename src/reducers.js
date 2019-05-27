@@ -8,8 +8,6 @@ import {
   FETCH_EVENTS_SUCCESS,
   FETCH_SITES_ERROR,
   FETCH_SITES_SUCCESS,
-  REQUEST_EVENT_TAGS,
-  REQUEST_EVENT_TYPES,
   REQUEST_EVENTS,
   REQUEST_SITES,
   SELECT_EVENT_TAG_KEY,
@@ -22,8 +20,7 @@ const sites = (
   state = {
     isFetchingSites: false,
     isShowingList: true,
-    selectedSite: '',
-    sitesUUIDs: [],
+    sitesData: {},
     message: '',
   },
   action,
@@ -39,7 +36,10 @@ const sites = (
       return {
         ...state,
         isFetchingSites: false,
-        sitesUUIDs: action.result.map(site => site.UUID),
+        sitesData: action.result.reduce((obj, site) => {
+          obj[site.UUID] = site.data;
+          return obj;
+        }, {}),
         message: action.message,
       };
     case REQUEST_SITES:
@@ -47,10 +47,41 @@ const sites = (
         ...state,
         isFetchingSites: true,
       };
+    default:
+      return state;
+  }
+};
+
+const search = (
+  state = {
+    site: '',
+    tagKey: '',
+    tagValue: '',
+    type: '',
+  },
+  action,
+) => {
+  switch (action.type) {
     case SELECT_SITE:
       return {
         ...state,
-        selectedSite: action.siteUUID,
+        site: action.siteUUID,
+      };
+    case SELECT_EVENT_TYPE:
+      return {
+        ...state,
+        type: action.eventType,
+      };
+    case SELECT_EVENT_TAG_KEY:
+      return {
+        ...state,
+        tagKey: action.eventTagKey,
+        tagValue: '',
+      };
+    case SELECT_EVENT_TAG_VALUE:
+      return {
+        ...state,
+        tagValue: action.eventTagValue,
       };
     default:
       return state;
@@ -60,13 +91,10 @@ const sites = (
 const events = (
   state = {
     data: [],
-    eventTags: [],
+    eventTags: undefined,
     eventTypes: [],
     isFetchingEvents: false,
     message: '',
-    selectedTagKey: '',
-    selectedTagValue: '',
-    selectedType: '',
   },
   action,
 ) => {
@@ -110,25 +138,6 @@ const events = (
         ...state,
         isFetchingEvents: true,
       };
-    case REQUEST_EVENT_TAGS:
-      return state;
-    case REQUEST_EVENT_TYPES:
-      return state;
-    case SELECT_EVENT_TYPE:
-      return {
-        ...state,
-        selectedType: action.eventType,
-      };
-    case SELECT_EVENT_TAG_KEY:
-      return {
-        ...state,
-        selectedTagKey: action.eventTagKey,
-      }
-    case SELECT_EVENT_TAG_VALUE:
-      return {
-        ...state,
-        selectedTagValue: action.eventTagValue,
-      }
     default:
       return state;
   }
@@ -136,6 +145,7 @@ const events = (
 
 const rootReducer = combineReducers({
   sites,
+  search,
   events,
 });
 

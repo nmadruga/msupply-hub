@@ -49,10 +49,10 @@ export function fetchEventTypesSuccess(types) {
   };
 }
 
-export function fetchEventsError(errorMessage) {
+export function fetchEventsError(message) {
   return {
     type: FETCH_EVENTS_ERROR,
-    errorMessage,
+    message,
   };
 }
 
@@ -79,7 +79,7 @@ export function fetchSitesSuccess({ message, result }) {
   };
 }
 
-export function requestEventTagKeys() {
+export function requestEventTags() {
   return {
     type: REQUEST_EVENT_TAGS,
   };
@@ -91,17 +91,15 @@ export function requestEventTypes() {
   };
 }
 
-export function requestEvents(query) {
+export function requestEvents() {
   return {
     type: REQUEST_EVENTS,
-    query
   };
 }
 
-export function requestSites(siteUUID) {
+export function requestSites() {
   return {
     type: REQUEST_SITES,
-    siteUUID,
   };
 }
 

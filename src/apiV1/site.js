@@ -6,7 +6,7 @@ import {
   siteAdded,
   siteMachineUUIDMatching,
   siteMachineUUIDNotMatching,
-  siteUUIDNotFound
+  siteUUIDNotFound,
 } from './helpers';
 import { checkAddNewSite, getSites } from '../database';
 
@@ -21,7 +21,7 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
       {
         type: 'site',
         UUID,
-        machineUUID
+        machineUUID,
       },
       config
     );
@@ -42,14 +42,15 @@ export const getSite = ({ config, db }) => async (req, res, next) => {
     const findMachineUUID = req.body.machineUUID;
 
     const foundSites = await getSites(db);
-    const matchingSite = foundSites.find(({ UUID }) => findUUID === UUID)
+    const matchingSite = foundSites.find(({ UUID }) => findUUID === UUID);
 
-    if (matchingSite)
-      return (matchingSite.machineUUID === "" || findMachineUUID === matchingSite.machineUUID)
+    if (matchingSite) {
+      return matchingSite.data.machineUUID === '' ||
+      findMachineUUID === matchingSite.data.machineUUID
         ? siteMachineUUIDMatching(res)
         : siteMachineUUIDNotMatching(res);
-    else
-      return siteUUIDNotFound(res);
+    }
+    return siteUUIDNotFound(res);
   } catch (e) {
     return next(e);
   }

@@ -12,7 +12,7 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   }
 };
 
-export const addSiteMatchingMachine = async (db, UUID, machineUUID) => {
+export const addSiteMachine = async (db, UUID, machineUUID) => {
   const updateStatement = `UPDATE "sites" SET data = jsonb_set(data, '{machineUUID}', '$1') WHERE "UUID" = $2`;
 
   await db.none(updateStatement, [machineUUID, UUID]);
@@ -28,7 +28,7 @@ const addStatement = function (whereOrAnd, field, { key, value }, index) {
   }[field];
 };
 
-export const checkAddNewSite = async (db, UUID, siteInfo, newJWT) => {
+export const addNewSite = async (db, UUID, siteInfo, newJWT) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   if (foundCount.count !== '0') return false;
 
@@ -37,12 +37,12 @@ export const checkAddNewSite = async (db, UUID, siteInfo, newJWT) => {
   return true;
 };
 
-export const checkSiteExists = async (db, UUID) => {
+export const checksSite = async (db, UUID) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   return foundCount.count !== '0';
 };
 
-export const checkSiteMatchesMachine = async (db, UUID, machineUUID) => {
+export const checksSiteAndMachine = async (db, UUID, machineUUID) => {
   const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
   return foundEntry.machineUUID === machineUUID;
 }
@@ -117,10 +117,3 @@ export const getTags = async db => {
     return [];
   }
 };
-
-export const resetSiteMatchingMachine = async (db, UUID) => {
-  const updateStatement = `UPDATE "sites" SET data = data - 'machineUUID' WHERE "UUID" = $1`;
-
-  await db.none(updateStatement, [UUID]);
-  return true;
-}

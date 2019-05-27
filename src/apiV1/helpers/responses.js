@@ -42,16 +42,29 @@ export const siteAdded = (res, newJWT) =>
     message: 'site added successfully',
   });
 
+export const sitesFound = (res, sites) =>
+  res.send({
+    authorized: true,
+    message: `Number of sites found: ${sites.length}`,
+    result: sites,
+  });
+
+export const sitesNotFound = res =>
+  res.send({
+    authorized: true,
+    message: 'No sites found in search',
+  });
+
 export const siteMachineUUIDMatching = res =>
   res.send({
     authorized: true,
-    message: `Site matches UUID and Machine UUID`,
+    message: 'Site matches UUID and Machine UUID',
   });
 
 export const siteMachineUUIDNotMatching = res =>
   res.status(406).send({
     authorized: true,
-    message: `Site UUID doesn't match Machine UUID`,
+    message: "Site UUID doesn't match Machine UUID",
   });
 
 export const siteUUIDNotFound = res =>

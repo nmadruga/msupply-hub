@@ -8,9 +8,11 @@ export {
   eventsFound,
   eventsNotFound,
   siteAdded,
+  sitesFound,
+  sitesNotFound,
   siteMachineUUIDMatching,
   siteMachineUUIDNotMatching,
   siteUUIDNotFound,
   tagsFound,
-  tagsNotFound
+  tagsNotFound,
 } from './responses';

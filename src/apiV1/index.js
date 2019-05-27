@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postSite, getSite } from './site';
+import { getSite, postSite, showSites } from './site';
 import { getEventTags, postEvent, showEvents } from './event';
 
 export default opts => {
@@ -10,6 +10,8 @@ export default opts => {
 
   api.get('/event', showEvents(opts));
   api.get('/tags', getEventTags(opts));
+
+  api.get('/site', showSites(opts));
   api.get('/site/:UUID', getSite(opts));
 
   return api;

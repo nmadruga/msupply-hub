@@ -18,7 +18,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
     const UUID = decodedToken.UUID;
     const machineUUID = decodeJWT.machineUUID;
-    const { type, triggerDate, ...otherInfo } = req.body;
+    const { type, eventType, triggerDate, ...otherInfo } = req.body;
 
     if (decodedToken.type !== 'site' || !(await checksSite(db, UUID)))
       return UUIDNotRegistered(res);
@@ -29,8 +29,9 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
     // In the rare occasion that an existing site has a machine upgraded we should delete the old machineUUID from the database
     if (!await getSiteMachine(db, UUID)) // Will check if machineUUID is empty, update to the NEW machineUUID and continue
       await addSiteMachine(db, UUID, machineUUID)
-
-    await addEvent(db, UUID, type, triggerDate, otherInfo); // Site and machine are correct, will add the new event
+      
+    const typeToAdd = eventType ? eventType : type;
+    await addEvent(db, UUID, typeToAdd, triggerDate, otherInfo); // Site and machine are correct, will add the new event
     return eventAdded(res);
   } catch (e) {
     return next(e);

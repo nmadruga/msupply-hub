@@ -1,6 +1,6 @@
 import 'regenerator-runtime/runtime';
 
-export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
+export const addNewEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   const insertStatement = 'INSERT into "events" ("siteUUID", "type", "data") VALUES ($1, $2, $3)';
   const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
 
@@ -10,6 +10,15 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
       insertResult.id,
     ]);
   }
+};
+
+export const addNewSite = async (db, UUID, newJWT) => {
+  const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
+  if (foundCount.count !== '0') return false;
+
+  const insertStatement = 'INSERT INTO "sites" ("UUID", jwt) VALUES ($1, $2)';
+  await db.none(insertStatement, [UUID, newJWT]);
+  return true;
 };
 
 export const addSiteMachine = async (db, UUID, machineUUID) => {
@@ -26,15 +35,6 @@ const addStatement = function (whereOrAnd, field, { key, value }, index) {
     startDate: ` ${whereOrAnd} "created" > $${index}`,
     endDate: ` ${whereOrAnd} "created" < $${index}`,
   }[field];
-};
-
-export const addNewSite = async (db, UUID, siteInfo, newJWT) => {
-  const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
-  if (foundCount.count !== '0') return false;
-
-  const insertStatement = 'INSERT INTO "sites" ("UUID", jwt, data) VALUES ($1, $2, $3)';
-  await db.none(insertStatement, [UUID, newJWT, siteInfo]);
-  return true;
 };
 
 export const checksSite = async (db, UUID) => {

@@ -9,7 +9,7 @@ import {
   tagsNotFound,
   siteMachineUUIDNotMatching,
 } from './helpers';
-import { addEvent, addSiteMachine, checksSite, checksSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
+import { addNewEvent, addSiteMachine, checksSite, checksSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -31,7 +31,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
       await addSiteMachine(db, UUID, machineUUID)
       
     const typeToAdd = eventType ? eventType : type;
-    await addEvent(db, UUID, typeToAdd, triggerDate, otherInfo); // Site and machine are correct, will add the new event
+    await addNewEvent(db, UUID, typeToAdd, triggerDate, otherInfo); // Site and machine are correct, will add the new event
     return eventAdded(res);
   } catch (e) {
     return next(e);

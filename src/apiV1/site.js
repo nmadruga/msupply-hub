@@ -52,7 +52,7 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
       },
       config
     );
-    if (!await addNewSite(db, UUID, newJWT)) return UUIDAlreadyExists(res);
+    if (!await addNewSite(db, UUID, machineUUID, newJWT)) return UUIDAlreadyExists(res);
 
     return siteAdded(res, newJWT);
   } catch (e) {

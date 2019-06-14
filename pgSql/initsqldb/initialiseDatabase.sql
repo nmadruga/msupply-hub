@@ -3,7 +3,9 @@ DROP TABLE IF EXISTS "version";
 CREATE TABLE "sites" (
    "UUID" varchar,
    "jwt" varchar,
+   "machineUUID" varchar,
    "created" TIMESTAMP NOT NULL DEFAULT NOW(),
+   "updated" TIMESTAMP,
    "data" jsonb,
    PRIMARY KEY ("UUID")
 );

@@ -5,7 +5,7 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
   const insertResult = await db.one(`${insertStatement} RETURNING id`, [UUID, type, otherInfo]);
 
   if (triggerDate) {
-    await db.none('UPDATE "events" set triggered = $1 where id = $2', [
+    await db.none('UPDATE "events" set triggered = $1 WHERE id = $2', [
       triggerDate,
       insertResult.id,
     ]);
@@ -13,9 +13,9 @@ export const addEvent = async (db, UUID, type, triggerDate, otherInfo) => {
 };
 
 export const addSiteMachine = async (db, UUID, machineUUID) => {
-  const updateStatement = `UPDATE "sites" SET data = jsonb_set(data, '{machineUUID}', '$1') WHERE "UUID" = $2`;
+  const updateStatement = `UPDATE "sites" SET "machineUUID" = $1 AND updated = $2 WHERE "UUID" = $3`;
 
-  await db.none(updateStatement, [machineUUID, UUID]);
+  await db.none(updateStatement, [machineUUID, Date.now(), UUID]);
   return true;
 }
 
@@ -28,12 +28,13 @@ const addStatement = function (whereOrAnd, field, { key, value }, index) {
   }[field];
 };
 
-export const addNewSite = async (db, UUID, siteInfo, newJWT) => {
+export const addNewSite = async (db, UUID, machineUUID, siteInfo, newJWT) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   if (foundCount.count !== '0') return false;
 
-  const insertStatement = 'INSERT INTO "sites" ("UUID", jwt, data) VALUES ($1, $2, $3)';
-  await db.none(insertStatement, [UUID, newJWT, siteInfo]);
+  const insertStatement = 'INSERT INTO "sites" ("UUID", "machineUUID", "jwt", "data")\
+   VALUES ($1, $2, $3, $4)';
+  await db.none(insertStatement, [UUID, machineUUID, newJWT, siteInfo]);
   return true;
 };
 
@@ -43,8 +44,8 @@ export const checksSite = async (db, UUID) => {
 };
 
 export const checksSiteAndMachine = async (db, UUID, machineUUID) => {
-  const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
-  return foundEntry.machineUUID === machineUUID;
+  const foundMachineUUID = await db.one(`SELECT "machineUUID" FROM "sites" WHERE "UUID" = $1`, [UUID]);
+  return foundMachineUUID === machineUUID;
 }
 
 const concatArgumentFields = function (args) {
@@ -100,7 +101,7 @@ export const getSites = async db => {
 export const getSiteMachine = async (db, UUID) => {
   try {
     const site = await db.one('SELECT * FROM "sites" WHERE "UUID" = $1', [UUID]);
-    return site.data.machineUUID;
+    return site.machineUUID;
   } catch (e) {
     return "";
   }

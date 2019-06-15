@@ -26,8 +26,8 @@ export const getSite = ({ config, db }) => async (req, res, next) => {
     if (matchingSite) {
       // If machineUUID is empty that means it can be replaced
       // will return that the site matches and update the machineUUID
-      return matchingSite.data.machineUUID === '' ||
-      findMachineUUID === matchingSite.data.machineUUID
+      return matchingSite.machineUUID === '' ||
+      findMachineUUID === matchingSite.machineUUID
         ? siteMachineUUIDMatching(res)
         : siteMachineUUIDNotMatching(res);
     }

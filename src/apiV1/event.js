@@ -1,13 +1,13 @@
 import {
   decodeJWT,
-  missingAuthHeaderOrJWT,
-  UUIDNotRegistered,
   eventAdded,
   eventsFound,
   eventsNotFound,
+  missingAuthHeaderOrJWT,
+  siteMachineUUIDNotMatching,
+  siteUUIDNotRegistered,
   tagsFound,
   tagsNotFound,
-  siteMachineUUIDNotMatching,
 } from './helpers';
 import { addNewEvent, addSiteInfo, addSiteMachine, checksSite, checksSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
 
@@ -20,7 +20,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
     const { type, eventType, machineUUID, triggerDate, ...otherInfo } = req.body;
 
     if (decodedToken.type !== 'site' || !(await checksSite(db, UUID)))
-      return UUIDNotRegistered(res);
+      return siteUUIDNotRegistered(res);
 
     if (!await checksSiteAndMachine(db, UUID, machineUUID)) // Error: Existing site UUID & machineUUID are not matching  
       return siteMachineUUIDNotMatching(res);
@@ -36,7 +36,7 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
     // For event of type "info" the lastest data is added to the site table
     if (typeToAdd === 'info') addSiteInfo(db, UUID, otherInfo);
-    
+
     return eventAdded(res);
   } catch (e) {
     return next(e);

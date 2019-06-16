@@ -4,18 +4,6 @@ export const missingAuthHeaderOrJWT = res =>
     message: 'Authorization header missing or JWT token is invalid',
   });
 
-export const UUIDAlreadyExists = res =>
-  res.status(401).send({
-    authorized: false,
-    message: 'UUID already registered',
-  });
-
-export const UUIDNotRegistered = res =>
-  res.status(401).send({
-    authorized: false,
-    message: 'UUID is not registered',
-  });
-
 export const eventAdded = res =>
   res.send({
     success: true,
@@ -67,10 +55,22 @@ export const siteMachineUUIDNotMatching = res =>
     message: "Site UUID doesn't match Machine UUID",
   });
 
+export const siteUUIDAlreadyExists = res =>
+  res.status(401).send({
+    authorized: false,
+    message: 'Site UUID already registered',
+  });
+
 export const siteUUIDNotFound = res =>
   res.status(406).send({
     authorized: true,
     message: 'No site found with this UUID',
+  });
+
+export const siteUUIDNotRegistered = res =>
+  res.status(401).send({
+    authorized: false,
+    message: 'Site UUID is not registered',
   });
 
 export const tagsFound = (res, tags) =>

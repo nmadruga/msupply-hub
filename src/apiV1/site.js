@@ -2,12 +2,12 @@ import {
   decodeJWT,
   encodeJWT,
   missingAuthHeaderOrJWT,
-  UUIDAlreadyExists,
   siteAdded,
   sitesFound,
   sitesNotFound,
   siteMachineUUIDMatching,
   siteMachineUUIDNotMatching,
+  siteUUIDAlreadyExists,
   siteUUIDNotFound,
 } from './helpers';
 import { addNewSite, getSites } from '../database';
@@ -52,7 +52,7 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
       },
       config
     );
-    if (!await addNewSite(db, UUID, machineUUID, newJWT)) return UUIDAlreadyExists(res);
+    if (!await addNewSite(db, UUID, machineUUID, newJWT)) return siteUUIDAlreadyExists(res);
 
     return siteAdded(res, newJWT);
   } catch (e) {

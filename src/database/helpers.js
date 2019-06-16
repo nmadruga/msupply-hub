@@ -37,12 +37,12 @@ export const addNewSite = async (db, UUID, siteInfo, newJWT) => {
   return true;
 };
 
-export const checksSite = async (db, UUID) => {
+export const checkSite = async (db, UUID) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   return foundCount.count !== '0';
 };
 
-export const checksSiteAndMachine = async (db, UUID, machineUUID) => {
+export const checkSiteAndMachine = async (db, UUID, machineUUID) => {
   const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
   return foundEntry.machineUUID === machineUUID;
 }

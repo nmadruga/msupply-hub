@@ -10,7 +10,7 @@ import {
   siteMachineUUIDNotMatching,
   siteUUIDNotFound,
 } from './helpers';
-import { checkAddNewSite, getSites } from '../database';
+import { addNewSite, getSites } from '../database';
 
 export const getSite = ({ config, db }) => async (req, res, next) => {
   try {
@@ -24,6 +24,8 @@ export const getSite = ({ config, db }) => async (req, res, next) => {
     const matchingSite = foundSites.find(({ UUID }) => findUUID === UUID);
 
     if (matchingSite) {
+      // If machineUUID is empty that means it can be replaced
+      // will return that the site matches and update the machineUUID
       return matchingSite.data.machineUUID === '' ||
       findMachineUUID === matchingSite.data.machineUUID
         ? siteMachineUUIDMatching(res)
@@ -50,7 +52,7 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
       },
       config
     );
-    if (!await checkAddNewSite(db, UUID, req.body, newJWT)) return UUIDAlreadyExists(res);
+    if (!await addNewSite(db, UUID, req.body, newJWT)) return UUIDAlreadyExists(res);
 
     return siteAdded(res, newJWT);
   } catch (e) {

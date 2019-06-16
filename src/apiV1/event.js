@@ -9,7 +9,7 @@ import {
   tagsNotFound,
   siteMachineUUIDNotMatching,
 } from './helpers';
-import { addEvent, addSiteMatchingMachine, checkSiteExists, checkSiteMatchesMachine, getEvents, getSiteMachine, getTags } from '../database';
+import { addEvent, addSiteMachine, checkSite, checkSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -18,18 +18,20 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
     const UUID = decodedToken.UUID;
     const machineUUID = decodeJWT.machineUUID;
-    const { type, triggerDate, ...otherInfo } = req.body;
+    const { type, eventType, triggerDate, ...otherInfo } = req.body;
 
-    if (decodedToken.type !== 'site' || !(await checkSiteExists(db, UUID)))
+    if (decodedToken.type !== 'site' || !(await checkSite(db, UUID)))
       return UUIDNotRegistered(res);
 
-    if (!await getSiteMachine(db, UUID)) // Checks if there is no machine UUID associatedn with this site
-      await addSiteMatchingMachine(db, UUID, machineUUID)
-
-    if (!await checkSiteMatchesMachine(db, UUID, machineUUID)) // If existing site & machine are not matching return error
+    if (!await checkSiteAndMachine(db, UUID, machineUUID)) // Error: Existing site UUID & machineUUID are not matching  
       return siteMachineUUIDNotMatching(res);
 
-    await addEvent(db, UUID, type, triggerDate, otherInfo); // Or if site and machine are correct, add the event
+    // In the rare occasion that an existing site has a machine upgraded we should delete the old machineUUID from the database
+    if (!await getSiteMachine(db, UUID)) // Will check if machineUUID is empty, update to the NEW machineUUID and continue
+      await addSiteMachine(db, UUID, machineUUID)
+      
+    const typeToAdd = eventType ? eventType : type;
+    await addEvent(db, UUID, typeToAdd, triggerDate, otherInfo); // Site and machine are correct, will add the new event
     return eventAdded(res);
   } catch (e) {
     return next(e);

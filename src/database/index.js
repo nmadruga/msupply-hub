@@ -1,10 +1,10 @@
 export { default } from './initDB';
 export {
   addEvent,
-  addSiteMatchingMachine,
-  checkAddNewSite,
-  checkSiteExists,
-  checkSiteMatchesMachine,
+  addSiteMachine,
+  addNewSite,
+  checkSite,
+  checkSiteAndMachine,
   getEvents,
   getEventTagKeys,
   getSites,

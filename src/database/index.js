@@ -2,6 +2,7 @@ export { default } from './initDB';
 export {
   addNewEvent,
   addNewSite,
+  addSiteInfo,
   addSiteMachine,
   checksSite,
   checksSiteAndMachine,

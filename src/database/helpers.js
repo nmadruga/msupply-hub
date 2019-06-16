@@ -21,6 +21,15 @@ export const addNewSite = async (db, UUID, machineUUID, newJWT) => {
   return true;
 };
 
+export const addSiteInfo = async (db, UUID, info) => {
+  let foundSite = await db.one('SELECT * FROM "sites" WHERE "UUID" = $1', [UUID]);
+  if (!foundSite) return false;
+
+  const updateStatement = `UPDATE "sites" SET data = data || $1 WHERE "UUID" = $2`;  
+  await db.none(updateStatement, [info, UUID]);
+  return true;
+};
+
 export const addSiteMachine = async (db, UUID, machineUUID) => {
   const updateStatement = `UPDATE "sites" SET "machineUUID" = $1 AND updated = $2 WHERE "UUID" = $3`;
 
@@ -43,8 +52,8 @@ export const checksSite = async (db, UUID) => {
 };
 
 export const checksSiteAndMachine = async (db, UUID, machineUUID) => {
-  const foundMachineUUID = await db.one(`SELECT "machineUUID" FROM "sites" WHERE "UUID" = $1`, [UUID]);
-  return foundMachineUUID === machineUUID;
+  const foundSite = await db.one(`SELECT "machineUUID" FROM "sites" WHERE "UUID" = $1`, [UUID]);
+  return machineUUID ? foundSite.machineUUID === machineUUID : false;
 }
 
 const concatArgumentFields = function (args) {

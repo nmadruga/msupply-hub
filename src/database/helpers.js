@@ -46,14 +46,14 @@ const addStatement = function (whereOrAnd, field, { key, value }, index) {
   }[field];
 };
 
-export const checksSite = async (db, UUID) => {
+export const checkSite = async (db, UUID) => {
   const foundCount = await db.one('SELECT count(*) FROM "sites" WHERE "UUID" = $1', [UUID]);
   return foundCount.count !== '0';
 };
 
-export const checksSiteAndMachine = async (db, UUID, machineUUID) => {
-  const foundSite = await db.one(`SELECT "machineUUID" FROM "sites" WHERE "UUID" = $1`, [UUID]);
-  return machineUUID ? foundSite.machineUUID === machineUUID : false;
+export const checkSiteAndMachine = async (db, UUID, machineUUID) => {
+  const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
+  return foundEntry.machineUUID === machineUUID;
 }
 
 const concatArgumentFields = function (args) {

@@ -2,20 +2,20 @@ DROP TABLE IF EXISTS "version";
 
 CREATE TABLE "sites" (
    "UUID" varchar,
-   "jwt" varchar,
    "machineUUID" varchar,
+   "jwt" varchar,
    "created" TIMESTAMP NOT NULL DEFAULT NOW(),
    "updated" TIMESTAMP,
-   "data" jsonb,
+   "data" jsonb NOT NULL DEFAULT '{}'::json,
    PRIMARY KEY ("UUID")
 );
 
 CREATE TABLE "events" (
    id serial,
    "siteUUID" varchar,
+   "type" varchar,
    "created" TIMESTAMP NOT NULL DEFAULT NOW(),
    "triggered" TIMESTAMP,
-   "type" varchar,
-   "data" jsonb,
+   "data" jsonb NOT NULL DEFAULT '{}'::json,
    PRIMARY KEY (id)
 );

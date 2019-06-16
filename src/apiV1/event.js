@@ -9,7 +9,7 @@ import {
   tagsFound,
   tagsNotFound,
 } from './helpers';
-import { addNewEvent, addSiteInfo, addSiteMachine, checksSite, checksSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
+import { addNewEvent, addSiteInfo, addSiteMachine, checkSite, checkSiteAndMachine, getEvents, getSiteMachine, getTags } from '../database';
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
@@ -19,10 +19,10 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
     const UUID = decodedToken.UUID;
     const { type, eventType, machineUUID, triggerDate, ...otherInfo } = req.body;
 
-    if (decodedToken.type !== 'site' || !(await checksSite(db, UUID)))
+    if (decodedToken.type !== 'site' || !(await checkSite(db, UUID)))
       return siteUUIDNotRegistered(res);
 
-    if (!await checksSiteAndMachine(db, UUID, machineUUID)) // Error: Existing site UUID & machineUUID are not matching  
+    if (!await checkSiteAndMachine(db, UUID, machineUUID)) // Error: Existing site UUID & machineUUID are not matching  
       return siteMachineUUIDNotMatching(res);
 
     // In the rare occasion that an existing site has a machine upgraded we should delete the old machineUUID from the database

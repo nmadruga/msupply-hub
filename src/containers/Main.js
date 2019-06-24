@@ -12,6 +12,8 @@ const FlexDiv = styled.div`
 const TopDiv = styled.div`
   display flex;
   flex-wrap: wrap;
+  padding: 10px;
+  margin: 50px;
 `;
 
 export class Main extends PureComponent {

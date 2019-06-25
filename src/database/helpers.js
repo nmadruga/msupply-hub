@@ -52,7 +52,7 @@ export const checkSite = async (db, UUID) => {
 };
 
 export const checkSiteAndMachine = async (db, UUID, machineUUID) => {
-  const foundEntry = await db.one(`SELECT data->>'machineUUID' as machineUUID FROM "sites" WHERE "UUID" = $1`, [UUID]);
+  const foundEntry = await db.one(`SELECT "machineUUID" FROM "sites" WHERE "UUID" = $1`, [UUID]);
   return foundEntry.machineUUID === machineUUID;
 }
 

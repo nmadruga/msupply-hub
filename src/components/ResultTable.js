@@ -21,8 +21,6 @@ const CustomTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
-const hidenHeaders = ['id', 'SiteUUID']
-
 class ResultTable extends Component {
   buildHeaders(events) {
     return (
@@ -78,7 +76,7 @@ class ResultTable extends Component {
 
 ResultTable.propTypes = {
   events: PropTypes.array,
-  message: PropTypes.String,
+  message: PropTypes.string,
 };
 
 const mapStateToProps = state => {

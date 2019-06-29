@@ -18,10 +18,10 @@ class SiteInfoBar extends PureComponent {
     return(
       <div>
         <InputLabel> Site info </InputLabel>
-        <GridList cellWidth={100} cellHeight={50} cols={3}>
+        <GridList cellHeight={50} cols={3}>
           {selectedSite &&
                   Object.entries(data).map(([key, value]) => (
-                    <ListItem>
+                    <ListItem key={key}>
                       <ListItemAvatar>
                         <Avatar>
                           <FolderIcon />

@@ -1,8 +1,9 @@
 export { default } from './initDB';
 export {
-  addEvent,
-  addSiteMachine,
+  addNewEvent,
   addNewSite,
+  addSiteInfo,
+  addSiteMachine,
   checkSite,
   checkSiteAndMachine,
   getEvents,

@@ -2,12 +2,12 @@ import {
   decodeJWT,
   encodeJWT,
   missingAuthHeaderOrJWT,
-  UUIDAlreadyExists,
   siteAdded,
   sitesFound,
   sitesNotFound,
   siteMachineUUIDMatching,
   siteMachineUUIDNotMatching,
+  siteUUIDAlreadyExists,
   siteUUIDNotFound,
 } from './helpers';
 import { addNewSite, getSites } from '../database';
@@ -26,8 +26,8 @@ export const getSite = ({ config, db }) => async (req, res, next) => {
     if (matchingSite) {
       // If machineUUID is empty that means it can be replaced
       // will return that the site matches and update the machineUUID
-      return matchingSite.data.machineUUID === '' ||
-      findMachineUUID === matchingSite.data.machineUUID
+      return matchingSite.machineUUID === '' ||
+      findMachineUUID === matchingSite.machineUUID
         ? siteMachineUUIDMatching(res)
         : siteMachineUUIDNotMatching(res);
     }
@@ -52,7 +52,7 @@ export const postSite = ({ config, db }) => async (req, res, next) => {
       },
       config
     );
-    if (!await addNewSite(db, UUID, req.body, newJWT)) return UUIDAlreadyExists(res);
+    if (!await addNewSite(db, UUID, machineUUID, newJWT)) return siteUUIDAlreadyExists(res);
 
     return siteAdded(res, newJWT);
   } catch (e) {

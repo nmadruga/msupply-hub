@@ -13,10 +13,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+    color: theme.palette.common.white
   },
   body: {
     fontSize: 14,
+    padding: '4px 5px 4px 24px'
   },
 }))(TableCell);
 
@@ -61,21 +62,21 @@ class ResultTable extends Component {
   render() {
     const { events, message } = this.props;
     return events.length > 0 ? (
-      <Grid item xs={6} md={12} style={{margin: '50px', alignContent:'center'}}>
+      <Grid item xs={6} md={12}>
         <Table>
           <TableHead>{this.buildHeaders(events)}</TableHead>
           {this.buildRows(events)}
         </Table>
       </Grid>
     ) : (
-      <InputLabel style={{backgroundColor: 'black', color: 'white', padding: '20px', margin: '50px'}}>{message}</InputLabel>
+      <InputLabel style={{backgroundColor: 'black', color: 'white', padding: '10px', margin: '20px'}}>{message}</InputLabel>
     ) ;
   }
 }
 
 ResultTable.propTypes = {
   events: PropTypes.array,
-  message: PropTypes.String,
+  message: PropTypes.string,
 };
 
 const mapStateToProps = state => {

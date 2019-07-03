@@ -23,12 +23,22 @@ http://localhost:3000/
 
 ## Goals
 
-- [ ] Display useful tablular formatted data in tables, and what ever else admin-on-rest gives for free
-- [ ] Can view basic information for sites
-- [ ] Can view events for sites 
-- [ ] Can filter basic information by site
-- [ ] Can filter events by site, date range, or event type
+- [x] Display useful tablular formatted data in tables, and what ever else admin-on-rest gives for free
+- [x] Can view basic information for sites
+- [x] Can view events for sites 
+- [x] Can filter basic information by site
+- [x] Can filter events by site, event type or event value
+- [ ] Can filter events by date range - have also checkbox to show only "latest"
 - [ ] Can moderate information shown based on user.
+
+## Deploy
+The hub web-app should be deployed to our Hub server whenever new features/fixes have been merged to the master branch.
+To deploy follow these steps:
+0. Copy they keypair3 (LP) to a local folder and name it keypair3.pem
+1. Connect to hub server using ssh
+`ssh -i keypair3.pem ubuntu@hub.msupply.org`
+2. Change user to sudo
+`sudo su`
 
 ---
 ## Create-react-app Things...

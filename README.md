@@ -31,13 +31,23 @@ http://localhost:3000/
 - [ ] Can filter events by date range - have also checkbox to show only "latest"
 - [ ] Can moderate information shown based on user.
 
-## Deploy
+## Hub Web App
+To access the existing Live and Dev Hub-WebApp you need to have Cors extension installed on your browser.
+To connect your mSupply to the Hub it needs to be running on v4.04 (after Hub code is merged) and using the Register window to set it should be connected to the Hub Server.
+
+Access the Dev Hub: http://hub.msupply/org:3000
+* Shows all connected mSupply running from development environment - uncompiled or unregistered mSupply
+
+Access the Live Hub: http://hub.msupply/org:3001
+* Shows all connected mSupply running from production environment - registered mSupply server or Single-user
+
+## Deployment
 The hub web-app should be deployed to our Hub server whenever new features/fixes have been merged to the master branch.
 To deploy follow these steps:
 
-0. Copy they keypair3 (LP) to a local folder and name it keypair3.pem
+0. Create local file named keypair3.pem with private key (LP)
 
-1. Connect to hub server using ssh
+1. Open a Terminal on same place where keypair3.pem is and connect to hub server using ssh
 ```
 ssh -i keypair3.pem ubuntu@hub.msupply.org
 ```
@@ -50,12 +60,64 @@ sudo su
 cd dev-server
 cd live-server
 ```
-4. Run the script updateAndRestart
+4. Run the script updateAndRestart passing your Github username
 ```
 ./upadteAndRestart <git_username>
 ```
-This will pull the latest changes from both repos: msupply-hub & mSupply-hub-web-app usgin the current branch.
-Check that both repos are using master! There should be a few changes to set correclty the postgress password and port. In the end it will restart server using pm2 and start the web-app (which should be also added to pm2 at some point).
+It will ask for your secrete to proceed.
+
+* This script will:
+  * Call ./pullMasters => pull the latest changes to both repos: msupply-hub & mSupply-hub-web-app in the current branch. Make sure both repos are using master or another branch if that's what you want.
+    * NOTE: Some local changes on files to cofigure postgres password and server port. Should be changed to environment variables at some point.
+  * Stop server pm2 instance
+  * Call ./updateDevServer or ./updateLiveServer => Install latest changes
+  * Start server pm2 instance
+  * Call ./startDevwebApp or ./startLiveWebApp => Start web-app using yarn to start it on background with output.log file. Should set web-app to be also running as pm2 instance at some point.
+
+## Database
+Postgress is also running in the same Ubuntu cloud server. Follow steps 0 and 1 above to connect to it.
+
+1. Change user to sudo
+```
+sudo su
+```
+
+2. Now change user to postgres
+```
+su - postgres
+```
+
+3. Enter Postgres
+```
+psql
+```
+
+In this Postgress there are 2 databases: 
+* mSupplyHubDev
+* mSupplyHubLive 
+
+4. Use the following commands to manage the data (i.e. on mSuppluHubDev database)
+```
+\l                    => List all databases
+\c mSupplyHubDev      => Connect to mSupplyHubDev database
+SELECT * FROM sites;  => Show all sites
+SELECT * FROM events; => Show all events
+DELETE FROM events WHERE "siteUUID" = 'some_site_uuid_to_be_deleted'
+\password postgres    => Reset password for user postgres (remember to change in the hub-server too)
+\q                    => Quit Postgres
+```
+
+### Create new database
+If you need to create a new database. Using the schema from mSupplyHubDev
+
+1. Create database (logged in as postgres or sudo)
+```
+createdb -O postgres mSupplyHubDev
+```
+2. Call initialiseDatabase.sql file pointing to desired database in Postgres
+```
+> psql -f /home/ubuntu/dev-hub-server/msupply-hub/pgSql/initsqldb/initialiseDatabase.sql mSupplyHubDev
+```
 
 # Auto-generated with Create React App
 ## Create-react-app Things...

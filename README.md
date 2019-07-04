@@ -34,13 +34,30 @@ http://localhost:3000/
 ## Deploy
 The hub web-app should be deployed to our Hub server whenever new features/fixes have been merged to the master branch.
 To deploy follow these steps:
-0. Copy they keypair3 (LP) to a local folder and name it keypair3.pem
-1. Connect to hub server using ssh
-`ssh -i keypair3.pem ubuntu@hub.msupply.org`
-2. Change user to sudo
-`sudo su`
 
----
+0. Copy they keypair3 (LP) to a local folder and name it keypair3.pem
+
+1. Connect to hub server using ssh
+```
+ssh -i keypair3.pem ubuntu@hub.msupply.org
+```
+2. Change user to sudo
+```
+sudo su
+```
+3. Go to dev-server OR live-server and
+```
+cd dev-server
+cd live-server
+```
+4. Run the script updateAndRestart
+```
+./upadteAndRestart <git_username>
+```
+This will pull the latest changes from both repos: msupply-hub & mSupply-hub-web-app usgin the current branch.
+Check that both repos are using master! There should be a few changes to set correclty the postgress password and port. In the end it will restart server using pm2 and start the web-app (which should be also added to pm2 at some point).
+
+# Auto-generated with Create React App
 ## Create-react-app Things...
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app) and uses [admin-on-rest](https://github.com/marmelab/admin-on-rest).
 

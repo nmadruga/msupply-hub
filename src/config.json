@@ -1,0 +1,15 @@
+{
+  "port": 4000,
+  "bodyLimit": "100kb",
+  "logFileName": "./log/logfile.log",
+  "jwtSecret": "secret",
+  "pg": {
+    "host": "localhost",
+    "port": "5433",
+    "max": "20",
+    "idleTimeoutMillis": 60000,
+    "user": "postgres",
+    "password": "pass",
+    "database": "mSupplyHub"
+  }
+}

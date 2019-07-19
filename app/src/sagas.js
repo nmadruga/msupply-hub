@@ -16,7 +16,10 @@ import {
 } from './actions';
 
 function fetchGetApi(resourceUrl) {
-  const baseUrl = 'http://localhost:4000/api/v1/';
+  const server = process.env.REACT_APP_HUB_SERVER || 'http://localhost:4000';
+  const jwt = process.env.REACT_APP_HUB_GENERAL_JWT || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiaW5pdCJ9.MXidBnzVRAvNNjMXMq1a9lfIf9B278_060GvUouKMbw';
+  const baseUrl = `${server}/api/v1/`;
+
   return fetch(baseUrl + resourceUrl, {
     method: 'get',
     headers: new Headers({

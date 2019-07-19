@@ -51,7 +51,8 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "dev": "PORT=3000 REACT_APP_HUB_PORT=3000 node scripts/start.js",
+    "start": "PORT=3001 REACT_APP_HUB_PORT=4001 node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },

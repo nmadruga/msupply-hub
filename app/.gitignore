@@ -5,7 +5,10 @@
 /node_modules
 
 # Production
-/dist
+/build
+
+# Testing
+/coverage
 
 # Logging
 *.log*

@@ -23,7 +23,9 @@ app.use(
 app.use('/api/v1', apiV1({ config, db: initDB(config) }));
 
 // process.env.PORT as per run command PORT=XXXX npm run dev
-app.server.listen(process.env.PORT || config.port);
-console.log(`Started on port ${app.server.address().port}`);
+const port = process.env.PORT || config.port
+
+app.server.listen(port);
+console.log(`Started on port ${port}`);
 
 export default app;

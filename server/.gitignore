@@ -1,1 +1,11 @@
+# MacOS
+.DS_Store
+
+# Dependencies
 /node_modules
+
+# Production
+/dist
+
+# Logging
+*.log*

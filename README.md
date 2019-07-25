@@ -54,3 +54,24 @@ The default port is listed in `./src/config.json` and can be optionally specifie
 [API Endpoints](https://github.com/sussol/msupply-hub/blob/master/src/apiV1/Documentation/index.md)  
 
 [DB table description](https://github.com/sussol/msupply-hub/tree/master/src/database/Documentation/database.md)
+
+## Web app
+
+### Installation
+
+Install node dependencies:
+  
+```
+curl -o- -L https://yarnpkg.com/install.sh | bash
+yarn install
+```
+
+## Usage
+  
+Start the web app:
+
+`yarn start`
+
+By default, the web app is hosted at `localhost` port `3000`.
+
+To access the web page in your browser, visit  `http://localhost:3000/`

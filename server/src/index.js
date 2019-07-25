@@ -5,7 +5,9 @@ import bodyParser from 'body-parser';
 
 import initDB from './database';
 import apiV1 from './apiV1';
-import config from './config.json';
+import configs from './../config.json';
+
+const config = configs[process.env.NODE_ENV];
 
 const app = express();
 app.server = http.createServer(app);
@@ -18,14 +20,13 @@ app.use(
     limit: config.bodyLimit,
   })
 );
+
 // TODO bind a middleware to check JWT token, rather then repeating the same code in site and event
 // api router
 app.use('/api/v1', apiV1({ config, db: initDB(config) }));
 
-// process.env.PORT as per run command PORT=XXXX npm run dev
-const port = process.env.PORT || config.port
-
-app.server.listen(port);
+const { port } = config;
+app.server.listen(port)
 console.log(`Started on port ${port}`);
 
 export default app;

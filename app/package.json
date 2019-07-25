@@ -17,6 +17,7 @@
     "css-loader": "0.28.7",
     "dotenv": "4.0.0",
     "dotenv-expand": "4.2.0",
+    "env-cmd": "^9.0.3",
     "eslint": "4.10.0",
     "eslint-config-react-app": "^2.1.0",
     "eslint-loader": "1.9.0",
@@ -29,6 +30,7 @@
     "fs-extra": "3.0.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "jsonwebtoken": "^8.5.1",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.8",
@@ -51,8 +53,8 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "dev": "PORT=3000 REACT_APP_HUB_PORT=3000 node scripts/start.js",
-    "start": "PORT=3001 REACT_APP_HUB_PORT=4001 node scripts/start.js",
+    "dev": "env-cmd -f ./.env.dev node scripts/start.js",
+    "start": "env-cmd -f ./.env.live node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },

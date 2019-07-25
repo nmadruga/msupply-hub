@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { getQuery } from './selector';
 import {
@@ -16,15 +17,27 @@ import {
 } from './actions';
 
 function fetchGetApi(resourceUrl) {
-  const server = process.env.REACT_APP_HUB_SERVER || 'http://localhost:4000';
-  const jwt = process.env.REACT_APP_HUB_GENERAL_JWT || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiaW5pdCJ9.MXidBnzVRAvNNjMXMq1a9lfIf9B278_060GvUouKMbw';
-  const baseUrl = `${server}/api/v1/`;
+  const hubConfig = {
+    host: process.env.REACT_APP_HUB_HOST,
+    port: process.env.REACT_APP_HUB_PORT,
+    secret: process.env.REACT_APP_HUB_SECRET
+  }
 
-  return fetch(baseUrl + resourceUrl, {
+  const baseUrl = `${hubConfig.host}:${hubConfig.port}`
+  const apiUrl = 'api/v1'
+  const url = `${baseUrl}/${apiUrl}/${resourceUrl}`
+
+  const auth = jwt.sign({
+    'type': 'init'
+  }, hubConfig.secret);
+
+  console.log(url);
+  console.log(auth);
+
+  return fetch(url, {
     method: 'get',
     headers: new Headers({
-      Authorization:
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiaW5pdCJ9.MXidBnzVRAvNNjMXMq1a9lfIf9B278_060GvUouKMbw',
+      Authorization: `Bearer ${auth}`
     })
   }).then(response => response.json());
 }
@@ -33,6 +46,7 @@ function* fetchSites() {
   const requestResourceUrl = 'site';
   try {
     const data = yield call(fetchGetApi, requestResourceUrl);
+    console.log(data);
     yield put(fetchSitesSuccess(data));
   } catch (error) {
     yield put(fetchSitesError(error.errorMessage));

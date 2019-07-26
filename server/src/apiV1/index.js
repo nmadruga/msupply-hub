@@ -14,7 +14,7 @@ export default opts => {
   api.get('/site', showSites(opts));
   api.get('/site/:UUID', getSite(opts));
 
-  api.options('/', (opts) => opts.res.status(200))
+  api.options('/', ({ res }) => res.status(200));
 
   return api;
 };

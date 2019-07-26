@@ -13,29 +13,31 @@ import { addNewEvent, addSiteInfo, addSiteMachine, checkSite, checkSiteAndMachin
 
 export const postEvent = ({ config, db }) => async (req, res, next) => {
   try {
-    const decodedToken = decodeJWT(req.headers.authorization, config);
+    const { headers } = req;
+    const { authorization } = headers;
+
+    const decodedToken = decodeJWT(authorization, config);
+
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const UUID = decodedToken.UUID;
-    const { type, eventType, machineUUID, triggerDate, ...otherInfo } = req.body;
+    const { UUID, type: jwtType } = decodedToken;
 
-    if (decodedToken.type !== 'site' || !(await checkSite(db, UUID)))
-      return siteUUIDNotRegistered(res);
+    if (jwtType !== 'site' || !(await checkSite(db, UUID))) return siteUUIDNotRegistered(res);
 
-    if (!await checkSiteAndMachine(db, UUID, machineUUID)) // Error: Existing site UUID & machineUUID are not matching  
-      return siteMachineUUIDNotMatching(res);
+    const { body } = req;
+    const { type, eventType, machineUUID, triggerDate, ...otherInfo } = body;
 
-    // In the rare occasion that an existing site has a machine upgraded we should delete the old machineUUID from the database
-    if (!await getSiteMachine(db, UUID)) // Will check if machineUUID is empty, update to the NEW machineUUID and continue
-      await addSiteMachine(db, UUID, machineUUID)
-      
-    const typeToAdd = eventType ? eventType : type;
+    if (!await checkSiteAndMachine(db, UUID, machineUUID)) return siteMachineUUIDNotMatching(res);
 
-    // Site and machine are correct, will add the new event
-    await addNewEvent(db, UUID, typeToAdd, triggerDate, otherInfo);
+    // If an existing site machine has been upgraded, delete the old machineUUID.
+    if (!await getSiteMachine(db, UUID)) await addSiteMachine(db, UUID, machineUUID);
 
-    // For event of type "info" the lastest data is added to the site table
-    if (typeToAdd === 'info') addSiteInfo(db, UUID, otherInfo);
+    const event = type || eventType;
+
+    await addNewEvent(db, UUID, event, triggerDate, otherInfo);
+
+    // If the event is of type "info", add the latest data to the database.
+    if (event === 'info') addSiteInfo(db, UUID, otherInfo);
 
     return eventAdded(res);
   } catch (e) {
@@ -45,14 +47,17 @@ export const postEvent = ({ config, db }) => async (req, res, next) => {
 
 export const showEvents = ({ config, db }) => async (req, res, next) => {
   try {
-    const decodedToken = decodeJWT(req.headers.authorization, config);
+    const { headers } = req;
+    const { authorization } = headers;
+
+    const decodedToken = decodeJWT(authorization, config);
+
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundEvents = await getEvents(db, req.query);
-    return foundEvents.length === 0
-      ? eventsNotFound(res)
-      : eventsFound(res, foundEvents);
+    const { query } = req;
+    const events = await getEvents(db, query);
 
+    return events.length === 0 ? eventsNotFound(res) : eventsFound(res, events);
   } catch (e) {
     return next(e);
   }
@@ -60,14 +65,16 @@ export const showEvents = ({ config, db }) => async (req, res, next) => {
 
 export const getEventTags = ({ config, db }) => async (req, res, next) => {
   try {
-    const decodedToken = decodeJWT(req.headers.authorization, config);
+    const { headers } = req;
+    const { authorization } = headers;
+
+    const decodedToken = decodeJWT(authorization, config);
+
     if (!decodedToken) return missingAuthHeaderOrJWT(res);
 
-    const foundTagKeys = await getTags(db);
-    return foundTagKeys.length === 0
-      ? tagsNotFound(res)
-      : tagsFound(res, foundTagKeys);
+    const tagKeys = await getTags(db);
 
+    return tagKeys.length === 0 ? tagsNotFound(res) : tagsFound(res, tagKeys);
   } catch (e) {
     return next(e);
   }
